@@ -10,6 +10,7 @@ except ImportError:
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
 import maya.OpenMayaUI as omui
+import sys
 
 win = None
 
@@ -17,12 +18,39 @@ def maya_window():
     main_window_ptr = omui.MQtUtil.mainWindow()
     return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
-class MainWindow(QtWidgets.QDialog):
+class MainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=maya_window()):
         super().__init__(parent)
         self.setWindowTitle("Prim")
-        self.setMinimumSize(300, 400)
-        self.setWindowFlags(self.windowFlags() | QtCore.Qt.Tool)
+        self.setMinimumSize(150, 200)
+
+        # MacOS support
+        if sys.platform=="darwin":
+            self.setWindowFlag(QtCore.Qt.Tool, True)
+
+        # Menu items
+        self.menuBar().addMenu("File")
+        self.menuBar().addMenu("Edit")
+
+        # Central widget
+        central_widget = QtWidgets.QWidget(self)
+        self.setCentralWidget(central_widget)
+        
+        # Labels
+        self.primitive_label = QtWidgets.QLabel("New primitive name")
+
+        # Line edits
+        self.primitive_name = QtWidgets.QLineEdit()
+
+        # Buttons
+        self.create = QtWidgets.QPushButton("Save primitive")
+        
+        # Layout
+        layout = QtWidgets.QVBoxLayout(central_widget)
+        layout.addWidget(self.primitive_label)
+        layout.addWidget(self.primitive_name)
+        layout.addWidget(self.create)
+        layout.addStretch()
 
 # We are using Maya Python API 2.0
 def maya_useNewAPI():
