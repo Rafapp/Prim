@@ -23,41 +23,39 @@ class mainWindow(QtWidgets.QMainWindow):
         super().__init__(parent)
         self.setWindowTitle("Prim")
         self.setMinimumSize(150, 200)
-        
+
         # MacOS support
         if sys.platform=="darwin":
             self.setWindowFlag(QtCore.Qt.Tool, True)
 
-        self.createMenus()
-        self.createWidgets()
-        self.createLayouts()
-        self.createConnections()
-
-    def createMenus(self):
+        # Menu items
         self.menuBar().addMenu("File")
         self.menuBar().addMenu("Edit")
 
-    def createWidgets(self):
         # Central widget
-        self.central_widget = QtWidgets.QWidget(self)
-        self.setCentralWidget(self.central_widget)
-
+        central_widget = QtWidgets.QWidget(self)
+        self.setCentralWidget(central_widget)
+        
+        # Labels
         self.primitive_label = QtWidgets.QLabel("New primitive name")
+
+        # Line edits
         self.primitive_name = QtWidgets.QLineEdit()
+
+        # Buttons
         self.create = QtWidgets.QPushButton("Save primitive")
- 
-    def createLayouts(self):
-        # TODO: QtWidgets.QGridLayout(self) for 3D primitive preview
+        self.create.pressed.connect(self.savePrimitive)
+        
+        # Layout
+        # QtWidgets.QGridLayout(self)
         # On every new widget we do addwidget(widget, row, column)
-        layout = QtWidgets.QVBoxLayout(self.central_widget)
+        layout = QtWidgets.QVBoxLayout(central_widget)
         layout.addWidget(self.primitive_label)
         layout.addWidget(self.primitive_name)
         layout.addWidget(self.create)
         layout.addStretch()
 
-    def createConnections(self):
-        self.create.clicked.connect(self.savePrimitive)
-
+    # @QtCore.Slot() # Used if two connections have same name, different args. Deprecated Qt6
     def savePrimitive(self):
         name = self.primitive_name.text()
         print("Primitive saved ...")
