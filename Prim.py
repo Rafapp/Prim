@@ -46,6 +46,8 @@ class MainWindow(QtWidgets.QMainWindow):
         self.create = QtWidgets.QPushButton("Save primitive")
         
         # Layout
+        # QtWidgets.QGridLayout(self)
+        # On every new widget we do addwidget(widget, row, column)
         layout = QtWidgets.QVBoxLayout(central_widget)
         layout.addWidget(self.primitive_label)
         layout.addWidget(self.primitive_name)
@@ -58,6 +60,13 @@ def maya_useNewAPI():
 
 def initializePlugin(plugin):
     global win
+
+    # Make sure there's a single window
+    if win is not None: 
+        win.close()
+        win.deleteLater()
+        win = None
+
     vendor = "Rafael Padilla Perez"
     version = "1.0.0"
     om.MFnPlugin(plugin, vendor, version)
