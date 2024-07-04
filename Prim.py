@@ -2,15 +2,18 @@ try:
     from shiboken2 import wrapInstance # Convert C++ pointers to python
     from PySide2 import QtCore # Core classes and functions
     from PySide2 import QtWidgets # UI components 
+    from PySide2 import QtGui
 except ImportError:
     from shiboken6 import wrapInstance 
     from PySide6 import QtWidgets
     from PySide6 import QtCore
+    from PySide6 import QtGui
 
 import maya.api.OpenMaya as om
 import maya.OpenMayaUI as omui
 import maya.cmds as cmds
 import maya.mel as mel
+import importlib
 import sys
 import os
 
@@ -29,11 +32,6 @@ class mainWindow(QtWidgets.QMainWindow):
     def showWindow(cls):
         if not cls.window_instance:
             cls.window_instance = mainWindow()  # Make sure to set the class variable
-            print("Created instance!")
-        else:
-            print("Instance already exists.")
-            
-        print(f"window_instance: {cls.window_instance}")
         
         if cls.window_instance.isHidden():
             cls.window_instance.show()
@@ -63,10 +61,20 @@ class mainWindow(QtWidgets.QMainWindow):
         # Central widget
         self.central_widget = QtWidgets.QWidget(self)
         self.setCentralWidget(self.central_widget)
-
+        
+        # Text field/buttons
         self.primitive_label = QtWidgets.QLabel("New primitive name")
         self.primitive_name = QtWidgets.QLineEdit()
         self.create = QtWidgets.QPushButton("Save primitive")
+
+        # Primitive gallery
+        self.image_label = QtWidgets.QLabel()
+        self.test_image = QtGui.QImage("Prim.png")
+        self.image_label.setPixmap(QtGui.QPixmap.fromImage(self.test_image))
+
+        self.scroll_area = QtWidgets.QScrollArea()
+        self.scroll_area.setBackgroundRole(QtGui.QPalette.Dark)
+        self.scroll_area.setWidget(self.image_label)
  
     def createLayouts(self):
         # TODO: QtWidgets.QGridLayout(self) for 3D primitive preview
@@ -75,6 +83,7 @@ class mainWindow(QtWidgets.QMainWindow):
         layout.addWidget(self.primitive_label)
         layout.addWidget(self.primitive_name)
         layout.addWidget(self.create)
+        layout.addWidget(self.scroll_area)
         layout.addStretch()
 
     def createConnections(self):
@@ -89,7 +98,7 @@ def maya_useNewAPI():
     pass
 
 def addPrimToShelf():
-    command = 'mainWindow.showWindow()'
+    command = 'import importlib;import Prim;importlib.reload(Prim);mainWindow.showWindow()'
     current_shelf = mel.eval('tabLayout -q -selectTab $gShelfTopLevel')
 
     if cmds.shelfButton('primButton', exists=True):
@@ -119,8 +128,6 @@ def initializePlugin(plugin):
 
     # Add to shelf, and start up
     addPrimToShelf()
-    win = mainWindow()
-    win.show()
 
 def uninitializePlugin(plugin):
     global win
