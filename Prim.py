@@ -94,7 +94,7 @@ def addPrimToShelf():
 
     if cmds.shelfButton('primButton', exists=True):
         return
-
+    #TODO: Make the installer install the icon in the proper place.
     cmds.shelfButton(
         'primButton',
         parent=current_shelf,
