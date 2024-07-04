@@ -19,6 +19,26 @@ def mayaWindow():
     return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
 class mainWindow(QtWidgets.QMainWindow):
+
+    window_instance = None
+
+    # Highlight the window if already opened
+    @classmethod
+    def showWindow(cls):
+        if not cls.window_instance:
+            cls.window_instance = mainWindow()  # Make sure to set the class variable
+            print("Created instance!")
+        else:
+            print("Instance already exists.")
+            
+        print(f"window_instance: {cls.window_instance}")
+        
+        if cls.window_instance.isHidden():
+            cls.window_instance.show()
+        else:
+            cls.window_instance.raise_()
+            cls.window_instance.activateWindow() 
+
     def __init__(self, parent=mayaWindow()):
         super().__init__(parent)
         self.setWindowTitle("Prim")
