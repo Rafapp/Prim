@@ -61,33 +61,45 @@ class mainWindow(QtWidgets.QMainWindow):
         # Central widget
         self.central_widget = QtWidgets.QWidget(self)
         self.setCentralWidget(self.central_widget)
-        
+
         # Text field/buttons
         self.primitive_label = QtWidgets.QLabel("New primitive name")
         self.primitive_name = QtWidgets.QLineEdit()
-        self.create = QtWidgets.QPushButton("Save primitive")
+        self.saveprimitive_button = QtWidgets.QPushButton("Save primitive")
 
-        # Primitive gallery
-        self.image_label = QtWidgets.QLabel()
-        self.test_image = QtGui.QImage("Prim.png")
-        self.image_label.setPixmap(QtGui.QPixmap.fromImage(self.test_image))
+        # Primitive gallery labels
+        self.test_label = QtWidgets.QLabel("testlabel\n\n\n\n\n")
+        self.test_label1 = QtWidgets.QLabel("testlabel\n\n\n\n\n")
+        self.test_label2 = QtWidgets.QLabel("testlabel\n\n\n\n\n")
+        self.test_label3 = QtWidgets.QLabel("testlabel\n\n\n\n\n")
+        self.test_label4 = QtWidgets.QLabel("testlabel\n\n\n\n\n")
 
+        # Scroll area setup
         self.scroll_area = QtWidgets.QScrollArea()
-        self.scroll_area.setBackgroundRole(QtGui.QPalette.Dark)
-        self.scroll_area.setWidget(self.image_label)
- 
+        self.scroll_area.setBackgroundRole(QtGui.QPalette.ColorRole.Dark)
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+
     def createLayouts(self):
-        # TODO: QtWidgets.QGridLayout(self) for 3D primitive preview
-        # On every new widget we do addwidget(widget, row, column)
-        layout = QtWidgets.QVBoxLayout(self.central_widget)
-        layout.addWidget(self.primitive_label)
-        layout.addWidget(self.primitive_name)
-        layout.addWidget(self.create)
-        layout.addWidget(self.scroll_area)
-        layout.addStretch()
+        main_layout = QtWidgets.QVBoxLayout(self.central_widget)
+        main_layout.addWidget(self.primitive_label)
+        main_layout.addWidget(self.primitive_name)
+        main_layout.addWidget(self.saveprimitive_button)
+        main_layout.addWidget(self.scroll_area)
+
+        gallery_widget = QtWidgets.QWidget()  # Widget to contain the gallery layout
+        gallery_layout = QtWidgets.QVBoxLayout(gallery_widget)
+        gallery_layout.addWidget(self.test_label)
+        gallery_layout.addWidget(self.test_label1)
+        gallery_layout.addWidget(self.test_label2)
+        gallery_layout.addWidget(self.test_label3)
+        gallery_layout.addWidget(self.test_label4)
+
+        self.scroll_area.setWidget(gallery_widget)  # Set the gallery widget as the scroll area's widget
+
 
     def createConnections(self):
-        self.create.clicked.connect(self.savePrimitive)
+        self.saveprimitive_button.clicked.connect(self.savePrimitive)
 
     def savePrimitive(self):
         name = self.primitive_name.text()
@@ -98,7 +110,7 @@ def maya_useNewAPI():
     pass
 
 def addPrimToShelf():
-    command = 'import importlib;import Prim;importlib.reload(Prim);mainWindow.showWindow()'
+    command = 'from Prim import mainWindow;mainWindow.showWindow()'
     current_shelf = mel.eval('tabLayout -q -selectTab $gShelfTopLevel')
 
     if cmds.shelfButton('primButton', exists=True):
