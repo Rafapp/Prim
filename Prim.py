@@ -1,16 +1,18 @@
 try:
-    from PySide2 import QtWidgets # UI components 
-    from PySide2 import QtCore # Core classes and functions
     from shiboken2 import wrapInstance # Convert C++ pointers to python
+    from PySide2 import QtCore # Core classes and functions
+    from PySide2 import QtWidgets # UI components 
 except ImportError:
-    from PySide6 import QtCore
-    from PySide6 import QtWidgets
     from shiboken6 import wrapInstance 
+    from PySide6 import QtWidgets
+    from PySide6 import QtCore
 
 import maya.api.OpenMaya as om
-import maya.cmds as cmds
 import maya.OpenMayaUI as omui
+import maya.cmds as cmds
+import maya.mel as mel
 import sys
+import os
 
 win = None
 
@@ -86,6 +88,22 @@ class mainWindow(QtWidgets.QMainWindow):
 def maya_useNewAPI():
     pass
 
+def addPrimToShelf():
+    command = 'mainWindow.showWindow()'
+    current_shelf = mel.eval('tabLayout -q -selectTab $gShelfTopLevel')
+
+    if cmds.shelfButton('primButton', exists=True):
+        return
+
+    cmds.shelfButton(
+        'primButton',
+        parent=current_shelf,
+        label='Prim',
+        command=command,
+        image='prim_icon.png',
+        sourceType='python'
+    )
+
 def initializePlugin(plugin):
     global win
 
@@ -99,7 +117,8 @@ def initializePlugin(plugin):
     version = "1.0.0"
     om.MFnPlugin(plugin, vendor, version)
 
-    # Create and show the Qt window
+    # Add to shelf, and start up
+    addPrimToShelf()
     win = mainWindow()
     win.show()
 
