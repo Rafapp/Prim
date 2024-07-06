@@ -1,7 +1,7 @@
 try:
     from shiboken2 import wrapInstance # Convert C++ pointers to python
     from PySide2 import QtCore # Core classes and functions
-    from PySide2 import QtWidgets # UI components 
+    from PySide2 import QtWidgets
     from PySide2 import QtGui
 except ImportError:
     from shiboken6 import wrapInstance 
