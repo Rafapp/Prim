@@ -36,7 +36,8 @@ class mainWindow(QtWidgets.QMainWindow):
     def __init__(self, parent=mayaWindow()):
         super().__init__(parent)
         self.setWindowTitle("Prim")
-        self.setMinimumSize(150, 200)
+        self.setMinimumHeight(250)
+        self.setFixedWidth(150)
         
         # MacOS support
         if sys.platform=="darwin":
@@ -62,17 +63,25 @@ class mainWindow(QtWidgets.QMainWindow):
         self.saveprimitive_button = QtWidgets.QPushButton("Save primitive")
 
         # Primitive gallery labels
-        self.test_label = QtWidgets.QLabel("testlabel\n\n\n\n\n")
-        self.test_label1 = QtWidgets.QLabel("testlabel\n\n\n\n\n")
-        self.test_label2 = QtWidgets.QLabel("testlabel\n\n\n\n\n")
-        self.test_label3 = QtWidgets.QLabel("testlabel\n\n\n\n\n")
-        self.test_label4 = QtWidgets.QLabel("testlabel\n\n\n\n\n")
+        self.test_label = QtWidgets.QLabel()
+        self.test_label1 = QtWidgets.QLabel()
+        self.test_label2 = QtWidgets.QLabel()
+        self.test_label3 = QtWidgets.QLabel()
+        self.test_label4 = QtWidgets.QLabel()
 
+        path = "/Users/rafa/Documents/Dev/Prim/Prim/icons/test_primitive.png"
+        self.test_label.setPixmap(QtGui.QPixmap(path))
+        self.test_label1.setPixmap(QtGui.QPixmap(path))
+        self.test_label2.setPixmap(QtGui.QPixmap(path))
+        self.test_label3.setPixmap(QtGui.QPixmap(path))
+        self.test_label4.setPixmap(QtGui.QPixmap(path))
+        
         # Scroll area setup
         self.scroll_area = QtWidgets.QScrollArea()
         self.scroll_area.setBackgroundRole(QtGui.QPalette.ColorRole.Dark)
         self.scroll_area.setWidgetResizable(True)
         self.scroll_area.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+        self.scroll_area.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
 
     def createLayouts(self):
         main_layout = QtWidgets.QVBoxLayout(self.central_widget)
