@@ -9,15 +9,9 @@ except ImportError:
     from PySide6 import QtCore
     from PySide6 import QtGui
 
-import maya.api.OpenMaya as om
 import maya.OpenMayaUI as omui
-import maya.cmds as cmds
 import maya.mel as mel
-import importlib
 import sys
-import os
-
-win = None
 
 def mayaWindow():
     main_window_ptr = omui.MQtUtil.mainWindow()
@@ -97,7 +91,6 @@ class mainWindow(QtWidgets.QMainWindow):
 
         self.scroll_area.setWidget(gallery_widget)  # Set the gallery widget as the scroll area's widget
 
-
     def createConnections(self):
         self.saveprimitive_button.clicked.connect(self.savePrimitive)
 
@@ -108,41 +101,3 @@ class mainWindow(QtWidgets.QMainWindow):
 # We are using Maya Python API 2.0
 def maya_useNewAPI():
     pass
-
-def addPrimToShelf():
-    command = 'from Prim import mainWindow;mainWindow.showWindow()'
-    current_shelf = mel.eval('tabLayout -q -selectTab $gShelfTopLevel')
-
-    if cmds.shelfButton('primButton', exists=True):
-        return
-    #TODO: Make the installer install the icon in the proper place.
-    cmds.shelfButton(
-        'primButton',
-        parent=current_shelf,
-        label='Prim',
-        command=command,
-        image='prim_icon.png',
-        sourceType='python'
-    )
-
-def initializePlugin(plugin):
-    global win
-
-    # Make sure there's a single window
-    if win is not None: 
-        win.close()
-        win.deleteLater()
-        win = None
-
-    vendor = "Rafael Padilla Perez"
-    version = "1.0.0"
-    om.MFnPlugin(plugin, vendor, version)
-
-    # Add to shelf, and start up
-    addPrimToShelf()
-
-def uninitializePlugin(plugin):
-    global win
-    if win is not None:
-        win.close()
-        win = None
