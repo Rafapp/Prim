@@ -17,6 +17,55 @@ def mayaWindow():
     main_window_ptr = omui.MQtUtil.mainWindow()
     return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
+class primitiveWidget(QtWidgets.QWidget):
+    # Constructor: PrimitiveWidget("path")
+    def __init__(self, image_path):
+        super().__init__()
+        self.image_path = image_path
+
+        self.createWidgets()
+        self.createLayouts()
+        self.createConnections()
+
+        self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed)
+
+    def createWidgets(self):
+        # Labels
+        self.name_label = QtWidgets.QLabel("Primitive name")
+        self.image_label = QtWidgets.QLabel()
+        self.image_label.setPixmap(QtGui.QPixmap(self.image_path))
+
+        self.name_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+        self.image_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
+
+        # Buttons
+        self.create_button = QtWidgets.QPushButton("Create")
+        self.delete_button = QtWidgets.QPushButton("Delete")
+
+    def createLayouts(self):
+        main_layout = QtWidgets.QVBoxLayout(self)
+        button_layout = QtWidgets.QHBoxLayout()
+
+        main_layout.addWidget(self.name_label)
+        main_layout.addWidget(self.image_label)
+
+        button_layout.addStretch()
+        button_layout.addWidget(self.create_button)
+        button_layout.addWidget(self.delete_button)
+        button_layout.addStretch()
+
+        main_layout.addLayout(button_layout)
+
+    def createConnections(self):
+        self.create_button.clicked.connect(self.createPrimitive)
+        self.delete_button.clicked.connect(self.deletePrimitive)
+
+    def createPrimitive(self):
+        print("created primitive")
+
+    def deletePrimitive(self):
+        print("deleted primitive")
+
 class mainWindow(QtWidgets.QMainWindow):
 
     window_instance = None
@@ -37,7 +86,7 @@ class mainWindow(QtWidgets.QMainWindow):
         super().__init__(parent)
         self.setWindowTitle("Prim")
         self.setMinimumHeight(250)
-        self.setFixedWidth(150)
+        self.setFixedWidth(200)
         
         # MacOS support
         if sys.platform=="darwin":
@@ -61,20 +110,6 @@ class mainWindow(QtWidgets.QMainWindow):
         self.primitive_label = QtWidgets.QLabel("New primitive name")
         self.primitive_name = QtWidgets.QLineEdit()
         self.saveprimitive_button = QtWidgets.QPushButton("Save primitive")
-
-        # Primitive gallery labels
-        self.test_label = QtWidgets.QLabel()
-        self.test_label1 = QtWidgets.QLabel()
-        self.test_label2 = QtWidgets.QLabel()
-        self.test_label3 = QtWidgets.QLabel()
-        self.test_label4 = QtWidgets.QLabel()
-
-        path = "/Users/rafa/Documents/Dev/Prim/Prim/icons/test_primitive.png"
-        self.test_label.setPixmap(QtGui.QPixmap(path))
-        self.test_label1.setPixmap(QtGui.QPixmap(path))
-        self.test_label2.setPixmap(QtGui.QPixmap(path))
-        self.test_label3.setPixmap(QtGui.QPixmap(path))
-        self.test_label4.setPixmap(QtGui.QPixmap(path))
         
         # Scroll area setup
         self.scroll_area = QtWidgets.QScrollArea()
@@ -91,13 +126,15 @@ class mainWindow(QtWidgets.QMainWindow):
         main_layout.addWidget(self.scroll_area)
 
         gallery_widget = QtWidgets.QWidget()  # Widget to contain the gallery layout
-        gallery_layout = QtWidgets.QVBoxLayout(gallery_widget)
-        gallery_layout.addWidget(self.test_label)
-        gallery_layout.addWidget(self.test_label1)
-        gallery_layout.addWidget(self.test_label2)
-        gallery_layout.addWidget(self.test_label3)
-        gallery_layout.addWidget(self.test_label4)
+        gallery_layout = QtWidgets.QVBoxLayout(gallery_widget) # TODO Add primitive custom widgets here 
 
+        # TODO add primitives dynamically
+        self.test_primitive = primitiveWidget("/Users/rafa/Documents/Dev/Prim/Prim/icons/test_primitive.png")
+        self.test_primitive2 = primitiveWidget("/Users/rafa/Documents/Dev/Prim/Prim/icons/test_primitive.png")
+        gallery_layout.addWidget(self.test_primitive)
+        gallery_layout.addWidget(self.test_primitive2)
+
+        gallery_layout.addStretch()
         self.scroll_area.setWidget(gallery_widget)  # Set the gallery widget as the scroll area's widget
 
     def createConnections(self):
