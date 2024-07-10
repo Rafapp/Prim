@@ -9,6 +9,7 @@ except ImportError:
     from PySide6 import QtCore
     from PySide6 import QtGui
 
+from MeshManager import updateLibrary, createMesh, savePrimitive, deletePrimitive
 import maya.OpenMayaUI as omui
 import maya.mel as mel
 import sys
@@ -61,6 +62,7 @@ class primitiveWidget(QtWidgets.QWidget):
         self.delete_button.clicked.connect(self.deletePrimitive)
 
     def createPrimitive(self):
+        createMesh("Sphere")
         print("created primitive")
 
     def deletePrimitive(self):
