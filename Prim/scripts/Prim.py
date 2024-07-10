@@ -129,8 +129,8 @@ class mainWindow(QtWidgets.QMainWindow):
         gallery_layout = QtWidgets.QVBoxLayout(gallery_widget) # TODO Add primitive custom widgets here 
 
         # TODO add primitives dynamically
-        self.test_primitive = primitiveWidget("/Users/rafa/Documents/Dev/Prim/Prim/icons/test_primitive.png")
-        self.test_primitive2 = primitiveWidget("/Users/rafa/Documents/Dev/Prim/Prim/icons/test_primitive.png")
+        self.test_primitive = primitiveWidget("/Users/rafa/Documents/Dev/Prim/Prim/primitives/previews/test_primitive.png")
+        self.test_primitive2 = primitiveWidget("/Users/rafa/Documents/Dev/Prim/Prim/primitives/previews/test_primitive.png")
         gallery_layout.addWidget(self.test_primitive)
         gallery_layout.addWidget(self.test_primitive2)
 
