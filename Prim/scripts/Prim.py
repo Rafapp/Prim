@@ -62,9 +62,10 @@ class primitiveWidget(QtWidgets.QWidget):
         self.delete_button.clicked.connect(self.deletePrimitive)
 
     def createPrimitive(self):
-        createMesh("cone")
+        createMesh("zebra")
 
     def deletePrimitive(self):
+        deletePrimitive("cubecp")
         pass
 
 class mainWindow(QtWidgets.QMainWindow):
@@ -99,8 +100,21 @@ class mainWindow(QtWidgets.QMainWindow):
         self.createConnections()
 
     def createMenus(self):
-        self.menuBar().addMenu("File")
-        self.menuBar().addMenu("Edit")
+        menu_bar = self.menuBar()
+
+        file_menu = menu_bar.addMenu("File")
+        new_action = QtGui.QAction("New", self)
+        open_action = QtGui.QAction("Open", self)
+        export_action = QtGui.QAction("Export", self)
+        file_menu.addAction(new_action)
+        file_menu.addAction(open_action)
+        file_menu.addAction(export_action)
+
+        prim_menu = menu_bar.addMenu("Prim")
+        refresh_action = QtGui.QAction("Refresh", self)
+        help_action = QtGui.QAction("Help", self)
+        prim_menu.addAction(refresh_action)
+        prim_menu.addAction(help_action)
 
     def createWidgets(self):
         # Central widget
