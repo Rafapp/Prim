@@ -12,6 +12,7 @@ except ImportError:
 from MeshManager import updateLibrary, createMesh, savePrimitive, deletePrimitive
 import maya.OpenMayaUI as omui
 import maya.mel as mel
+import subprocess
 import sys
 
 def mayaWindow():
@@ -102,19 +103,26 @@ class mainWindow(QtWidgets.QMainWindow):
     def createMenus(self):
         menu_bar = self.menuBar()
 
-        file_menu = menu_bar.addMenu("File")
-        new_action = QtGui.QAction("New", self)
-        open_action = QtGui.QAction("Open", self)
-        export_action = QtGui.QAction("Export", self)
-        file_menu.addAction(new_action)
-        file_menu.addAction(open_action)
-        file_menu.addAction(export_action)
+        # "File" menu
+        self.file_menu = menu_bar.addMenu("File")
+        self.new_action = QtGui.QAction("New", self)
+        self.open_action = QtGui.QAction("Open", self)
+        self.export_action = QtGui.QAction("Export", self)
+        self.file_menu.addAction(self.new_action)
+        self.file_menu.addAction(self.open_action)
+        self.file_menu.addAction(self.export_action)
+        self.new_action.triggered.connect(self.newPrimitiveFile)
+        self.open_action.triggered.connect(self.openPrimitiveFile)
+        self.export_action.triggered.connect(self.exportPrimitiveFile)
 
-        prim_menu = menu_bar.addMenu("Prim")
-        refresh_action = QtGui.QAction("Refresh", self)
-        help_action = QtGui.QAction("Help", self)
-        prim_menu.addAction(refresh_action)
-        prim_menu.addAction(help_action)
+        # "Prim" menu
+        self.prim_menu = menu_bar.addMenu("Prim")
+        self.refresh_action = QtGui.QAction("Refresh", self)
+        self.help_action = QtGui.QAction("Help", self)
+        self.prim_menu.addAction(self.refresh_action)
+        self.prim_menu.addAction(self.help_action)
+        self.refresh_action.triggered.connect(self.refreshPrimitives)
+        self.help_action.triggered.connect(self.redirectHelp)
 
     def createWidgets(self):
         # Central widget
@@ -155,10 +163,38 @@ class mainWindow(QtWidgets.QMainWindow):
     def createConnections(self):
         self.saveprimitive_button.clicked.connect(self.savePrimitive)
 
+    # Connection functions
+    def newPrimitiveFile(self):
+        print("new prim file")
+        pass
+
+    def openPrimitiveFile(self):
+        print("open prim file")
+        pass
+
+    def exportPrimitiveFile(self):
+        print("export prim file")
+        pass
+
+    def refreshPrimitives(self):
+        print("refresh primitives")
+        pass
+
+    def redirectHelp(self):
+        print("export prim file")
+        url = "https://github.com/Rafapp/Prim"
+        if sys.platform=='win32':
+            os.startfile(url)
+        elif sys.platform=='darwin':
+            subprocess.Popen(['open', url])
+        else:
+            try:
+                subprocess.Popen(['xdg-open', url])
+            except OSError:
+                print('Please open the link on your browser: ' + url)
+
     def savePrimitive(self):
         name = self.primitive_name.text()
         print("Primitive saved ...")
 
 # We are using Maya Python API 2.0
-def maya_useNewAPI():
-    pass
