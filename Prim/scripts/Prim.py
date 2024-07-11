@@ -62,11 +62,10 @@ class primitiveWidget(QtWidgets.QWidget):
         self.delete_button.clicked.connect(self.deletePrimitive)
 
     def createPrimitive(self):
-        createMesh("Sphere")
-        print("created primitive")
+        createMesh("cone")
 
     def deletePrimitive(self):
-        print("deleted primitive")
+        pass
 
 class mainWindow(QtWidgets.QMainWindow):
 

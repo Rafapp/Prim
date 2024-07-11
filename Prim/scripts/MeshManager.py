@@ -9,6 +9,7 @@ import maya.api.OpenMaya as om
 import maya.cmds as cmds
 import maya.mel as mel
 import sys
+import os
 
 # We are using Maya Python API 2.0
 def maya_useNewAPI():
@@ -24,14 +25,43 @@ def renderMeshPreview(name):
     pass
 
 # Creates (instances) mesh to the current MAYA scene.
-def createMesh(name):
-    imported_objects = cmds.file("/Users/rafa/Documents/Dev/Prim/Prim/primitives/meshes/sphere.obj", i = True, rnn=True)
-    transforms = cmds.ls(imported_objects, type='transform')
+def createMesh(mesh_name):
+    # Navigate to meshes folder in module 
+    dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
+    
+    # Check for files in /meshes
+    files = cmds.getFileList(folder = dir_path)
+    if not files: 
+        print("Error: Meshes folder is empty") 
+        return
 
+    # Check for .obj files in /meshes
+    obj_files = [f for f in files if f.endswith('.obj')]
+    if not obj_files: 
+        print("Error: No .obj files found in meshes folder") 
+        return
+
+    mesh_path = None
+    for item in obj_files:
+        full_name = os.path.join(dir_path, item)
+        file_name, ext = os.path.splitext(os.path.basename(full_name))
+        mesh_path = full_name
+        if file_name == mesh_name: break
+
+    # Check if mesh with that specific name was found.
+    if not mesh_path:
+        print("Error: Could not find mesh for primitive \"" + mesh_name + "\"")
+ 
+    # Import the primitive to the scene. 
+    mesh = cmds.file(mesh_path, i = True, rnn=True)
+    transforms = cmds.ls(mesh, type='transform')
+
+    # Rename the newly created mesh. 
     for i, object in enumerate(transforms):
-        # rename it
-        goodName = '%s_%s' % ("sphere", str(i+1).zfill(3))
-        cmds.rename(object, goodName)
+        name = '%s_%s' % (mesh_name, str(i+1).zfill(3))
+        cmds.rename(object, name)
+
+    print("Succesfully created primitive: " + "\"" + mesh_name + "\"")
 
 # Saves selected mesh in the scene to the .prim file, and updates library.
 def savePrimitive(name, data):
