@@ -244,6 +244,6 @@ class mainWindow(QtWidgets.QMainWindow):
 
     def savePrimitive(self):
         name = self.primitive_name.text()
-        print("Primitive saved ...")
+        print(f"Primitive \"{name}\" saved ...")
 
 # We are using Maya Python API 2.0
