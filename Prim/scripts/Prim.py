@@ -11,6 +11,7 @@ except ImportError:
 
 from MeshManager import updateLibrary, createMesh, savePrimitive, deletePrimitive
 import maya.OpenMayaUI as omui
+import maya.cmds as cmds
 import maya.mel as mel
 import subprocess
 import sys
@@ -165,8 +166,49 @@ class mainWindow(QtWidgets.QMainWindow):
 
     # Connection functions
     def newPrimitiveFile(self):
-        print("new prim file")
-        pass
+        user_file_name = None
+
+        # Give prompt with naming
+        prompt = cmds.promptDialog(title="New primitive library"
+                                      , message="Create new primitive library:"
+                                      , messageAlign="center"
+                                      , button=["Create", "Cancel"]
+                                      , defaultButton="Create"
+                                      , cancelButton="Cancel")
+        if prompt == "Cancel": return
+        user_file_name = cmds.promptDialog(query=True, text=True)
+        dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/libraries"
+
+        # Check for files in /libraries
+        files = cmds.getFileList(folder = dir_path)
+        if files: 
+            # Check for .prim files in /libraries
+            prim_files = [f for f in files if f.endswith('.prim')]
+            if prim_files: 
+                for item in prim_files:
+                    full_name = os.path.join(dir_path, item)
+                    file_name, ext = os.path.splitext(os.path.basename(full_name))
+                    if file_name == user_file_name:
+                        cmds.confirmDialog(
+                            title='Error',
+                            message='A local primitive library already has this name, try again with a different name',
+                            button='Ok',
+                            dismissString='Ok'
+                        )
+                        return
+
+        if not user_file_name:
+            cmds.confirmDialog(
+                title='Error',
+                message='Please enter a non-empty name',
+                button='Ok',
+                dismissString='Ok'
+            )
+            return
+
+        full_filename = user_file_name + ".prim" 
+        open(os.path.join(dir_path, full_filename), 'w')
+        print("New prim file with name: " + user_file_name + " created")
 
     def openPrimitiveFile(self):
         print("open prim file")
@@ -174,6 +216,7 @@ class mainWindow(QtWidgets.QMainWindow):
 
     def exportPrimitiveFile(self):
         print("export prim file")
+        name = cmds.fileDialog2(fileMode=0, caption="Save As")
         pass
 
     def refreshPrimitives(self):
