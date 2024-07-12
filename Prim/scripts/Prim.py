@@ -71,7 +71,7 @@ class primitiveWidget(QtWidgets.QWidget):
         pass
 
 class mainWindow(QtWidgets.QMainWindow):
-
+    current_prim_file_path = None
     window_instance = None
 
     # Highlight the window if already opened
@@ -130,8 +130,13 @@ class mainWindow(QtWidgets.QMainWindow):
         self.central_widget = QtWidgets.QWidget(self)
         self.setCentralWidget(self.central_widget)
 
+        # Label for current file being edited
+        self.current_file_label = QtWidgets.QLabel("Current library: None")
+        self.current_file_label.setStyleSheet("color:darkgrey")
+
         # Text field/buttons
         self.primitive_label = QtWidgets.QLabel("New primitive name")
+        self.primitive_label.setStyleSheet("color:white")
         self.primitive_name = QtWidgets.QLineEdit()
         self.saveprimitive_button = QtWidgets.QPushButton("Save primitive")
         
@@ -144,6 +149,7 @@ class mainWindow(QtWidgets.QMainWindow):
 
     def createLayouts(self):
         main_layout = QtWidgets.QVBoxLayout(self.central_widget)
+        main_layout.addWidget(self.current_file_label)
         main_layout.addWidget(self.primitive_label)
         main_layout.addWidget(self.primitive_name)
         main_layout.addWidget(self.saveprimitive_button)
@@ -175,7 +181,7 @@ class mainWindow(QtWidgets.QMainWindow):
                                       , button=["Create", "Cancel"]
                                       , defaultButton="Create"
                                       , cancelButton="Cancel")
-        if prompt == "Cancel": return
+        if prompt != "Create": return
         user_file_name = cmds.promptDialog(query=True, text=True)
         dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/libraries"
 
