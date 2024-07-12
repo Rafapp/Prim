@@ -16,6 +16,9 @@ import maya.mel as mel
 import subprocess
 import sys
 
+# Global variable for the file being dynamically edited by prim
+current_prim_file_path = None
+
 def mayaWindow():
     main_window_ptr = omui.MQtUtil.mainWindow()
     return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
@@ -71,7 +74,6 @@ class primitiveWidget(QtWidgets.QWidget):
         pass
 
 class mainWindow(QtWidgets.QMainWindow):
-    current_prim_file_path = None
     window_instance = None
 
     # Highlight the window if already opened
@@ -171,6 +173,9 @@ class mainWindow(QtWidgets.QMainWindow):
         self.saveprimitive_button.clicked.connect(self.savePrimitive)
 
     # Connection functions
+    def updateCurrentFileLabel(self, file_name):
+        self.current_file_label.setText("Current library: " + file_name)
+
     def newPrimitiveFile(self):
         user_file_name = None
 
@@ -215,9 +220,17 @@ class mainWindow(QtWidgets.QMainWindow):
         full_filename = user_file_name + ".prim" 
         open(os.path.join(dir_path, full_filename), 'w')
         print("New prim file with name: \"" + user_file_name + "\" created")
+        # TODO This breaks with spaces in file name
+        current_prim_file_path = dir_path + "/" + full_filename
+
 
     def openPrimitiveFile(self):
-        print("open prim file")
+        dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/libraries"
+        path = cmds.fileDialog2(startingDirectory=dir_path, fileFilter="Primitive Library(*.prim)", fileMode=1, dialogStyle=2)
+        print(f"Opened primitive library: {path}")
+        file_name = os.path.basename(path[0])
+        self.updateCurrentFileLabel(file_name)
+        updateLibrary()
         pass
 
     def exportPrimitiveFile(self):
