@@ -169,7 +169,7 @@ class mainWindow(QtWidgets.QMainWindow):
         user_file_name = None
 
         # Give prompt with naming
-        prompt = cmds.promptDialog(title="New primitive library"
+        prompt = cmds.promptDialog(title="New"
                                       , message="Create new primitive library:"
                                       , messageAlign="center"
                                       , button=["Create", "Cancel"]
@@ -208,7 +208,7 @@ class mainWindow(QtWidgets.QMainWindow):
 
         full_filename = user_file_name + ".prim" 
         open(os.path.join(dir_path, full_filename), 'w')
-        print("New prim file with name: " + user_file_name + " created")
+        print("New prim file with name: \"" + user_file_name + "\" created")
 
     def openPrimitiveFile(self):
         print("open prim file")
