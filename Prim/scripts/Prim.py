@@ -14,6 +14,7 @@ import maya.OpenMayaUI as omui
 import maya.cmds as cmds
 import maya.mel as mel
 import subprocess
+import shutil
 import sys
 
 # Global variable for the file being dynamically edited by prim
@@ -221,26 +222,48 @@ class mainWindow(QtWidgets.QMainWindow):
         open(os.path.join(dir_path, full_filename), 'w')
         print("New prim file with name: \"" + user_file_name + "\" created")
         # TODO This breaks with spaces in file name
-        current_prim_file_path = dir_path + "/" + full_filename
-
+        global current_prim_file_path
+        current_prim_file_path = dir_path[0] + "/" + full_filename
 
     def openPrimitiveFile(self):
+        # Open file, and update current file data
         dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/libraries"
         path = cmds.fileDialog2(startingDirectory=dir_path, fileFilter="Primitive Library(*.prim)", fileMode=1, dialogStyle=2)
-        print(f"Opened primitive library: {path}")
-        file_name = os.path.basename(path[0])
-        self.updateCurrentFileLabel(file_name)
+        global current_prim_file_path
+        current_prim_file_path = path[0]
+        print(f"Opened primitive library: {current_prim_file_path}")
+
+        # Update current file label at top of window
+        file_name = os.path.basename(path[0]).split('.')
+        title = file_name[0]
+        if len(title) > 15:
+            title = title[0:15] + "..."
+
+        self.updateCurrentFileLabel(title)
         updateLibrary()
-        pass
 
     def exportPrimitiveFile(self):
-        print("export prim file")
-        name = cmds.fileDialog2(fileMode=0, caption="Save As")
-        pass
+        print(f'current path in exporter: {current_prim_file_path}')
+        if current_prim_file_path == None:
+            cmds.confirmDialog(
+                title='Error',
+                message='Please open a primitive library first',
+                button='Ok',
+                dismissString='Ok'
+            )
+            return
+
+        def copyAndRename(src_path, dest_path, new_name):
+            print(f"copy from src: {src_path} to: {dest_path}")
+            shutil.copy(src_path, dest_path + "/" + new_name)
+
+        path = cmds.fileDialog2(fileMode=0, caption="Save As", fileFilter="Primitive Library(*.prim)") 
+        file_name = os.path.basename(path[0])
+        dest_dir = os.path.dirname(path[0])
+        copyAndRename(current_prim_file_path, dest_dir, file_name)
 
     def refreshPrimitives(self):
-        print("refresh primitives")
-        pass
+        updateLibrary()
 
     def redirectHelp(self):
         print("export prim file")

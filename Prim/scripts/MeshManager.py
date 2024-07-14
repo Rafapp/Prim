@@ -32,6 +32,7 @@ def show_warning_dialog(prompt):
         return False
 
 def updateLibrary():
+    print("Regenerating library data ...")
     pass
 
 # Renders a 3/4, lambertian, black and white preview of the primitive. Stores as .png image.
