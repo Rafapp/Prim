@@ -83,12 +83,13 @@ def createMesh(mesh_name):
     print("Succesfully created primitive: " + "\"" + mesh_name + "\"")
 
 # Saves selected mesh in the scene to the .prim file, and updates library.
-def savePrimitive(name, data):
+def savePrimitiveData(name, data):
+    print(f"Saved: {name}.obj")
     updateLibrary()
     pass
 
 # Deletes mesh from .prim file, its .obj mesh, and its preview.
-def deletePrimitive(mesh_name):
+def deletePrimitiveData(mesh_name):
     confirm = show_warning_dialog("Are you sure you wish to delete this primitive?\n\nThis action is irreversible!")
     if confirm == False: return
 
@@ -123,6 +124,6 @@ def deletePrimitive(mesh_name):
     # Delete the mesh's .obj file
     os.remove(mesh_path)
 
-    # Update the .prim file
+    # TODO: Update the .prim file
  
     print("Succesfully deleted primitive: " + "\"" + mesh_name + "\"")

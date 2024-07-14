@@ -9,7 +9,7 @@ except ImportError:
     from PySide6 import QtCore
     from PySide6 import QtGui
 
-from MeshManager import updateLibrary, createMesh, savePrimitive, deletePrimitive
+from MeshManager import updateLibrary, createMesh, savePrimitiveData, deletePrimitiveData
 import maya.OpenMayaUI as omui
 import maya.cmds as cmds
 import maya.mel as mel
@@ -71,7 +71,7 @@ class primitiveWidget(QtWidgets.QWidget):
         createMesh("zebra")
 
     def deletePrimitive(self):
-        deletePrimitive("cubecp")
+        deletePrimitiveData("cubecp")
         pass
 
 class mainWindow(QtWidgets.QMainWindow):
@@ -284,6 +284,6 @@ class mainWindow(QtWidgets.QMainWindow):
 
     def savePrimitive(self):
         name = self.primitive_name.text()
-        print(f"Primitive \"{name}\" saved ...")
+        savePrimitiveData(name, "")
 
 # We are using Maya Python API 2.0
