@@ -174,8 +174,19 @@ class mainWindow(QtWidgets.QMainWindow):
         self.saveprimitive_button.clicked.connect(self.savePrimitive)
 
     # Connection functions
-    def updateCurrentFileLabel(self, file_name):
-        self.current_file_label.setText("Current library: " + file_name)
+    def updateCurrentFile(self, file_path): 
+        # Update current file path data
+        global current_prim_file_path 
+        current_prim_file_path = file_path
+
+        # Update current file label at top of window
+        file_name = os.path.basename(file_path).split('.')
+        title = file_name[0]
+        if len(title) > 15:
+            title = title[0:15] + "..."
+
+        self.current_file_label.setText("Current library: " + title)
+        print(f"Current prim file updated to: {file_path}")
 
     def newPrimitiveFile(self):
         user_file_name = None
@@ -219,31 +230,24 @@ class mainWindow(QtWidgets.QMainWindow):
             return
 
         full_filename = user_file_name + ".prim" 
-        open(os.path.join(dir_path, full_filename), 'w')
-        print("New prim file with name: \"" + user_file_name + "\" created")
+
         # TODO This breaks with spaces in file name
-        global current_prim_file_path
-        current_prim_file_path = dir_path[0] + "/" + full_filename
+        open(os.path.join(dir_path, full_filename), 'w')
+        print("New prim library file with name: \"" + user_file_name + "\" created")
+
+        # Update current file
+        self.updateCurrentFile(os.path.join(dir_path, full_filename))
 
     def openPrimitiveFile(self):
         # Open file, and update current file data
         dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/libraries"
         path = cmds.fileDialog2(startingDirectory=dir_path, fileFilter="Primitive Library(*.prim)", fileMode=1, dialogStyle=2)
-        global current_prim_file_path
-        current_prim_file_path = path[0]
         print(f"Opened primitive library: {current_prim_file_path}")
 
-        # Update current file label at top of window
-        file_name = os.path.basename(path[0]).split('.')
-        title = file_name[0]
-        if len(title) > 15:
-            title = title[0:15] + "..."
-
-        self.updateCurrentFileLabel(title)
+        self.updateCurrentFile(path[0])
         updateLibrary()
 
     def exportPrimitiveFile(self):
-        print(f'current path in exporter: {current_prim_file_path}')
         if current_prim_file_path == None:
             cmds.confirmDialog(
                 title='Error',
