@@ -170,15 +170,15 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         main_layout.addWidget(self.scroll_area)
 
         gallery_widget = QtWidgets.QWidget()  # Widget to contain the gallery layout
-        gallery_layout = QtWidgets.QVBoxLayout(gallery_widget) # TODO Add primitive custom widgets here 
+        self.gallery_layout = QtWidgets.QVBoxLayout(gallery_widget)
 
         # TODO add primitives dynamically
         self.test_primitive = primitiveWidget("/Users/rafa/Documents/Dev/Prim/Prim/primitives/previews/test_primitive.png")
         self.test_primitive2 = primitiveWidget("/Users/rafa/Documents/Dev/Prim/Prim/primitives/previews/test_primitive.png")
-        gallery_layout.addWidget(self.test_primitive)
-        gallery_layout.addWidget(self.test_primitive2)
+        self.gallery_layout.addWidget(self.test_primitive)
+        self.gallery_layout.addWidget(self.test_primitive2)
 
-        gallery_layout.addStretch()
+        self.gallery_layout.addStretch()
         self.scroll_area.setWidget(gallery_widget)  # Set the gallery widget as the scroll area's widget
 
     def createConnections(self):
@@ -244,9 +244,9 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Open file, and update current file data
         dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/libraries"
         path = cmds.fileDialog2(startingDirectory=dir_path, fileFilter="Primitive Library(*.prim)", fileMode=1, dialogStyle=2)
-        print(f"Opened primitive library: {current_prim_file_path}")
 
         self.updateCurrentFile(path[0])
+        print(f"Opened primitive library: {current_prim_file_path}")
         updateLibrary()
 
     def exportPrimitiveFile(self):
