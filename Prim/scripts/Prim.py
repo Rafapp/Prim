@@ -24,6 +24,15 @@ def mayaWindow():
     main_window_ptr = omui.MQtUtil.mainWindow()
     return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
+# Helper function, creates error dialogue
+def show_error_dialog(prompt):
+    cmds.confirmDialog(
+        title='Error',
+        message=prompt,
+        button='Ok',
+        dismissString='Ok'
+    )
+
 class primitiveWidget(QtWidgets.QWidget):
     # Constructor: PrimitiveWidget("path")
     def __init__(self, image_path):
@@ -211,22 +220,13 @@ class mainWindow(QtWidgets.QMainWindow):
                 for item in prim_files:
                     full_name = os.path.join(dir_path, item)
                     file_name, ext = os.path.splitext(os.path.basename(full_name))
+                    # TODO Create a confirm dialog function, no reason to repeat this ...
                     if file_name == user_file_name:
-                        cmds.confirmDialog(
-                            title='Error',
-                            message='A local primitive library already has this name, try again with a different name',
-                            button='Ok',
-                            dismissString='Ok'
-                        )
+                        show_confirmation_dialog("A local primitive already has this name, try another name.")
                         return
 
         if not user_file_name:
-            cmds.confirmDialog(
-                title='Error',
-                message='Please enter a non-empty name',
-                button='Ok',
-                dismissString='Ok'
-            )
+            show_confirmation_dialog("Please enter a non-empty name")
             return
 
         full_filename = user_file_name + ".prim" 
@@ -249,12 +249,7 @@ class mainWindow(QtWidgets.QMainWindow):
 
     def exportPrimitiveFile(self):
         if current_prim_file_path == None:
-            cmds.confirmDialog(
-                title='Error',
-                message='Please open a primitive library first',
-                button='Ok',
-                dismissString='Ok'
-            )
+            show_confirmation_dialog("Please open a primitive library first")
             return
 
         def copyAndRename(src_path, dest_path, new_name):
@@ -284,6 +279,6 @@ class mainWindow(QtWidgets.QMainWindow):
 
     def savePrimitive(self):
         name = self.primitive_name.text()
-        savePrimitiveData(name, "")
+        savePrimitiveData(name)
 
 # We are using Maya Python API 2.0

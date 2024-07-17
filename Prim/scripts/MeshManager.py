@@ -1,10 +1,6 @@
 # TODO Functionality:
 # - Check for corrupt data (e.g. file name changed) and prompt user
 
-#TODO Data:
-# - Current .prim file being used
-# - Absolute path to module folder
-
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
 import maya.mel as mel
@@ -16,32 +12,40 @@ def maya_useNewAPI():
     pass
 
 # Helper function, creates a confirmation dialogue
-def show_warning_dialog(prompt):
+def show_confirmation_dialog(prompt):
     result = cmds.confirmDialog(
         title='Warning',
         message=prompt,
         button=['Yes', 'No'],
         defaultButton='Yes',
         cancelButton='No',
-        dismissString='No'
-    )
+        dismissString='No')
 
     if result == 'Yes':
         return True
     else:
         return False
 
+# Helper function, creates error dialogue
+def show_error_dialog(prompt):
+    cmds.confirmDialog(
+        title='Error',
+        message=prompt,
+        button='Ok',
+        dismissString='Ok'
+    )
+
+# Deletes all .png previews and .obj renders. Regenerates using .prim file.
 def updateLibrary():
     print("Regenerating library data ...")
     pass
 
 # Renders a 3/4, lambertian, black and white preview of the primitive. Stores as .png image.
-def renderMeshPreview(name):
+def renderMeshPreview(name, objData):
     # Check if corresponding .obj file exists
     # Render the mesh
     pass
 
-# Creates (instances) mesh to the current MAYA scene.
 def createMesh(mesh_name):
     # Navigate to meshes folder in module 
     dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
@@ -83,14 +87,50 @@ def createMesh(mesh_name):
     print("Succesfully created primitive: " + "\"" + mesh_name + "\"")
 
 # Saves selected mesh in the scene to the .prim file, and updates library.
-def savePrimitiveData(name, data):
-    print(f"Saved: {name}.obj")
+def savePrimitiveData(mesh_name):
+    if not mesh_name:
+        show_error_dialog("Please provide a primitive name")
+        return
+
+    # Check for files in /meshes
+    dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
+    files = cmds.getFileList(folder = dir_path)
+
+    if files: 
+        obj_files = [f for f in files if f.endswith('.obj')]
+        if obj_files: 
+            for item in obj_files:
+                full_name = os.path.join(dir_path, item)
+                file_name, ext = os.path.splitext(os.path.basename(full_name))
+                if file_name == mesh_name:
+                    show_confirmation_dialog(f"Mesh with name {name} already exists. Please try a new name.")
+                    return
+
+    selected = cmds.ls(sl=True,long=True) or []
+    selectCount = len(selected)
+
+    if selectCount < 1:
+        show_error_dialog("Error: Please select at least one mesh")
+        return
+    elif selectCount > 1:
+        show_error_dialog("Error: Please select only one mesh")
+        return
+
+    dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
+    full_dir_path = dir_path + "/" + mesh_name + ".obj"
+    cmds.file(full_dir_path,
+              force=True,
+              options="groups=0;ptgroups=0;materials=0;smoothing=0;normals=0",
+              type="OBJexport", 
+              pr=True, 
+              es=True)
+    print(f"Saved: {mesh_name}.obj")
     updateLibrary()
     pass
 
 # Deletes mesh from .prim file, its .obj mesh, and its preview.
 def deletePrimitiveData(mesh_name):
-    confirm = show_warning_dialog("Are you sure you wish to delete this primitive?\n\nThis action is irreversible!")
+    confirm = show_confirmation_dialog("Are you sure you wish to delete this primitive?\n\nThis action is irreversible!")
     if confirm == False: return
 
     # Navigate to meshes folder in module 
