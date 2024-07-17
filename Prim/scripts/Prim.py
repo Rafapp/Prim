@@ -10,12 +10,14 @@ except ImportError:
     from PySide6 import QtGui
 
 from MeshManager import updateLibrary, createMesh, savePrimitiveData, deletePrimitiveData
+from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 import maya.OpenMayaUI as omui
 import maya.cmds as cmds
 import maya.mel as mel
 import subprocess
 import shutil
 import sys
+import os
 
 # Global variable for the file being dynamically edited by prim
 current_prim_file_path = None
@@ -83,7 +85,7 @@ class primitiveWidget(QtWidgets.QWidget):
         deletePrimitiveData("cubecp")
         pass
 
-class mainWindow(QtWidgets.QMainWindow):
+class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     window_instance = None
 
     # Highlight the window if already opened
@@ -93,7 +95,7 @@ class mainWindow(QtWidgets.QMainWindow):
             cls.window_instance = mainWindow()  # Make sure to set the class variable
         
         if cls.window_instance.isHidden():
-            cls.window_instance.show()
+            cls.window_instance.show(dockable=True)
         else:
             cls.window_instance.raise_()
             cls.window_instance.activateWindow() 
@@ -102,7 +104,7 @@ class mainWindow(QtWidgets.QMainWindow):
         super().__init__(parent)
         self.setWindowTitle("Prim")
         self.setMinimumHeight(250)
-        self.setFixedWidth(200)
+        self.setMinimumWidth(200)
         
         # MacOS support
         if sys.platform=="darwin":
@@ -278,6 +280,9 @@ class mainWindow(QtWidgets.QMainWindow):
                 print('Please open the link on your browser: ' + url)
 
     def savePrimitive(self):
+        if not current_prim_file_path:
+            show_error_dialog("Open a primitive library (.prim) file first")
+
         name = self.primitive_name.text()
         savePrimitiveData(name)
 

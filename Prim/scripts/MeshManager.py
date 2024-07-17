@@ -103,7 +103,7 @@ def savePrimitiveData(mesh_name):
                 full_name = os.path.join(dir_path, item)
                 file_name, ext = os.path.splitext(os.path.basename(full_name))
                 if file_name == mesh_name:
-                    show_confirmation_dialog(f"Mesh with name {name} already exists. Please try a new name.")
+                    show_error_dialog(f"Mesh with name {mesh_name} already exists. Please try a new name.")
                     return
 
     selected = cmds.ls(sl=True,long=True) or []
@@ -120,7 +120,7 @@ def savePrimitiveData(mesh_name):
     full_dir_path = dir_path + "/" + mesh_name + ".obj"
     cmds.file(full_dir_path,
               force=True,
-              options="groups=0;ptgroups=0;materials=0;smoothing=0;normals=0",
+              options="groups=0;ptgroups=0;materials=0;smoothing=0;normals=0;exportTextures=0",
               type="OBJexport", 
               pr=True, 
               es=True)
