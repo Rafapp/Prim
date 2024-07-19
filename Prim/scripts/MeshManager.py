@@ -1,6 +1,3 @@
-# TODO Functionality:
-# - Check for corrupt data (e.g. file name changed) and prompt user
-
 from Prim import get_current_prim_file_path 
 import maya.api.OpenMaya as om
 import maya.cmds as cmds

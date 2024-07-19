@@ -26,6 +26,16 @@ def get_current_prim_file_path():
     global current_prim_file_path
     return current_prim_file_path
 
+def clear_layout(layout):
+    if not layout: return
+    while layout.count():
+        item = layout.takeAt(0)
+        widget = item.widget()
+        if widget is not None:
+            widget.deleteLater()
+        else:
+            clear_layout(item.layout())
+
 def mayaWindow():
     main_window_ptr = omui.MQtUtil.mainWindow()
     return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
@@ -91,6 +101,7 @@ class primitiveWidget(QtWidgets.QWidget):
 
 class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     window_instance = None
+    primitive_widgets = []
 
     # Highlight the window if already opened
     @classmethod
@@ -267,7 +278,10 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         copyAndRename(current_prim_file_path, dest_dir, file_name)
 
     def refreshPrimitiveWidgets(self):
-        pass
+        clear_layout(self.gallery_layout)
+        for p in self.primitive_widgets:
+            self.gallery_layout.addWidget(p)
+        self.gallery_layout.addStretch()
 
     def redirectHelp(self):
         print("export prim file")
