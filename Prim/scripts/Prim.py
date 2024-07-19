@@ -9,7 +9,7 @@ except ImportError:
     from PySide6 import QtCore
     from PySide6 import QtGui
 
-from MeshManager import updateLibrary, createMesh, savePrimitiveData, deletePrimitiveData
+from MeshManager import instanceMesh, savePrimitiveData, deletePrimitiveData
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 import maya.OpenMayaUI as omui
 import maya.cmds as cmds
@@ -21,6 +21,10 @@ import os
 
 # Global variable for the file being dynamically edited by prim
 current_prim_file_path = None
+
+def get_current_prim_file_path():
+    global current_prim_file_path
+    return current_prim_file_path
 
 def mayaWindow():
     main_window_ptr = omui.MQtUtil.mainWindow()
@@ -79,7 +83,7 @@ class primitiveWidget(QtWidgets.QWidget):
         self.delete_button.clicked.connect(self.deletePrimitive)
 
     def createPrimitive(self):
-        createMesh("zebra")
+        instanceMesh("zebra")
 
     def deletePrimitive(self):
         deletePrimitiveData("cubecp")
@@ -136,7 +140,7 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.help_action = QtGui.QAction("Help", self)
         self.prim_menu.addAction(self.refresh_action)
         self.prim_menu.addAction(self.help_action)
-        self.refresh_action.triggered.connect(self.refreshPrimitives)
+        self.refresh_action.triggered.connect(self.refreshPrimitiveWidgets)
         self.help_action.triggered.connect(self.redirectHelp)
 
     def createWidgets(self):
@@ -247,7 +251,6 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         self.updateCurrentFile(path[0])
         print(f"Opened primitive library: {current_prim_file_path}")
-        updateLibrary()
 
     def exportPrimitiveFile(self):
         if current_prim_file_path == None:
@@ -263,8 +266,8 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         dest_dir = os.path.dirname(path[0])
         copyAndRename(current_prim_file_path, dest_dir, file_name)
 
-    def refreshPrimitives(self):
-        updateLibrary()
+    def refreshPrimitiveWidgets(self):
+        pass
 
     def redirectHelp(self):
         print("export prim file")
@@ -282,6 +285,7 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def savePrimitive(self):
         if not current_prim_file_path:
             show_error_dialog("Open a primitive library (.prim) file first")
+            return
 
         name = self.primitive_name.text()
         savePrimitiveData(name)

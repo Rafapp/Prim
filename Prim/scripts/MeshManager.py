@@ -1,6 +1,7 @@
 # TODO Functionality:
 # - Check for corrupt data (e.g. file name changed) and prompt user
 
+from Prim import get_current_prim_file_path 
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
 import maya.mel as mel
@@ -35,18 +36,13 @@ def show_error_dialog(prompt):
         dismissString='Ok'
     )
 
-# Deletes all .png previews and .obj renders. Regenerates using .prim file.
-def updateLibrary():
-    print("Regenerating library data ...")
-    pass
-
 # Renders a 3/4, lambertian, black and white preview of the primitive. Stores as .png image.
 def renderMeshPreview(name, objData):
     # Check if corresponding .obj file exists
     # Render the mesh
     pass
 
-def createMesh(mesh_name):
+def instanceMesh(mesh_name):
     # Navigate to meshes folder in module 
     dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
     
@@ -125,8 +121,27 @@ def savePrimitiveData(mesh_name):
               pr=True, 
               es=True)
     print(f"Saved: {mesh_name}.obj")
-    updateLibrary()
-    pass
+
+    # Add header for this primitive (mesh name, beginMesh)
+    current_prim = get_current_prim_file_path()
+    prim_file = open(current_prim, "a")
+    newprimitive_str = f"\n{mesh_name}\nbeginMesh\n"
+    prim_file.write(newprimitive_str)
+
+    # Add .obj data
+    obj_file = open(full_dir_path, "r")
+    next(obj_file)
+    next(obj_file)
+    objdata_str = obj_file.read()
+    prim_file.write(objdata_str)
+    endprimitive_str = "endMesh"
+    prim_file.write(endprimitive_str)
+
+    # Close files
+    prim_file.close()
+    obj_file.close()
+
+    print(f"Updated .prim file: {current_prim}")
 
 # Deletes mesh from .prim file, its .obj mesh, and its preview.
 def deletePrimitiveData(mesh_name):
@@ -164,6 +179,6 @@ def deletePrimitiveData(mesh_name):
     # Delete the mesh's .obj file
     os.remove(mesh_path)
 
-    # TODO: Update the .prim file
+    # TODO: Delete primitive from the .prim file 
  
     print("Succesfully deleted primitive: " + "\"" + mesh_name + "\"")
