@@ -51,21 +51,58 @@ def show_error_dialog(prompt):
 
 class primitiveWidget(QtWidgets.QWidget):
     # Constructor: PrimitiveWidget("path")
-    def __init__(self, image_path):
+    def __init__(self, name):
         super().__init__()
-        self.image_path = image_path
 
+        self.name = name
+
+        # Get thumbnail, set to default if not found 
+        thumbnail_path = self.getThumbnail()
+        if not thumbnail_dir: thumbnail_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails/default.png"
+        self.thumbnail_path = thumbnail_path
+
+        # Creation functions
         self.createWidgets()
         self.createLayouts()
         self.createConnections()
 
         self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed)
 
+    def getThumbnail(self):
+        # Check for files in /thumbnails
+        dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails"
+        files = cmds.getFileList(folder = dir_path)
+
+        if not files: 
+            print("Error: Thumbnails folder is empty") 
+            return
+
+        # Check for .png files in /thumbnails
+        png_files = [f for f in files if f.endswith('.png')]
+        if not png_files: 
+            print("Error: No .png files found in thumbnails folder") 
+            return
+
+        image_path = None
+        for item in png_files:
+            full_name = os.path.join(dir_path, item)
+            file_name, ext = os.path.splitext(os.path.basename(full_name))
+            if file_name == self.name:
+                image_path = full_name
+                break
+
+        # Check if mesh with that specific name was found.
+        if not image_path:
+            print(f"Error: Could not find thumbnail for primitive \"{self.name}\"")
+            return
+
+        return image_path
+     
     def createWidgets(self):
         # Labels
-        self.name_label = QtWidgets.QLabel("Primitive name")
+        self.name_label = QtWidgets.QLabel(self.name)
         self.image_label = QtWidgets.QLabel()
-        self.image_label.setPixmap(QtGui.QPixmap(self.image_path))
+        self.image_label.setPixmap(QtGui.QPixmap(self.thumbnail_path))
 
         self.name_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
         self.image_label.setAlignment(QtCore.Qt.AlignmentFlag.AlignCenter)
@@ -93,15 +130,15 @@ class primitiveWidget(QtWidgets.QWidget):
         self.delete_button.clicked.connect(self.deletePrimitive)
 
     def createPrimitive(self):
-        instanceMesh("zebra")
+        instanceMesh(self.name)
 
     def deletePrimitive(self):
-        deletePrimitiveData("cubecp")
+        deletePrimitiveData(self.name)
         pass
 
 class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     window_instance = None
-    primitive_widgets = []
+    primitive_widgets = {} 
 
     # Highlight the window if already opened
     @classmethod
@@ -187,12 +224,6 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         gallery_widget = QtWidgets.QWidget()  # Widget to contain the gallery layout
         self.gallery_layout = QtWidgets.QVBoxLayout(gallery_widget)
 
-        # TODO add primitives dynamically
-        self.test_primitive = primitiveWidget("/Users/rafa/Documents/Dev/Prim/Prim/primitives/previews/test_primitive.png")
-        self.test_primitive2 = primitiveWidget("/Users/rafa/Documents/Dev/Prim/Prim/primitives/previews/test_primitive.png")
-        self.gallery_layout.addWidget(self.test_primitive)
-        self.gallery_layout.addWidget(self.test_primitive2)
-
         self.gallery_layout.addStretch()
         self.scroll_area.setWidget(gallery_widget)  # Set the gallery widget as the scroll area's widget
 
@@ -277,14 +308,21 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         dest_dir = os.path.dirname(path[0])
         copyAndRename(current_prim_file_path, dest_dir, file_name)
 
+    # Create a widget object, add to dictionary
+    def addPrimitiveWidget(self, name):
+        widget = PrimitiveWidget(name)
+        primitive_widgets[name] = widget
+        pass
+
+    # Refresh the UI with any new primitives in the dictionary
     def refreshPrimitiveWidgets(self):
         clear_layout(self.gallery_layout)
-        for p in self.primitive_widgets:
-            self.gallery_layout.addWidget(p)
+        # Read the prim file, and get the name of the primitives, create widgets for them
+        for widget in primitive_widgets.values():
+            self.gallery_layout.addWidget(widget)
         self.gallery_layout.addStretch()
 
     def redirectHelp(self):
-        print("export prim file")
         url = "https://github.com/Rafapp/Prim"
         if sys.platform=='win32':
             os.startfile(url)
@@ -302,6 +340,6 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
 
         name = self.primitive_name.text()
+        # ERROR
+        addPrimitiveWidget(name)
         savePrimitiveData(name)
-
-# We are using Maya Python API 2.0

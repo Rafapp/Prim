@@ -1,4 +1,3 @@
-from Prim import get_current_prim_file_path 
 import maya.api.OpenMaya as om
 import maya.cmds as cmds
 import maya.mel as mel
@@ -120,6 +119,7 @@ def savePrimitiveData(mesh_name):
     print(f"Saved: {mesh_name}.obj")
 
     # Add header for this primitive (mesh name, beginMesh)
+    from Prim import get_current_prim_file_path
     current_prim = get_current_prim_file_path()
     prim_file = open(current_prim, "a")
     newprimitive_str = f"\n{mesh_name}\nbeginMesh\n"
