@@ -58,7 +58,7 @@ class primitiveWidget(QtWidgets.QWidget):
 
         # Get thumbnail, set to default if not found 
         thumbnail_path = self.getThumbnail()
-        if not thumbnail_dir: thumbnail_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails/default.png"
+        if not thumbnail_path: thumbnail_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails/default.png"
         self.thumbnail_path = thumbnail_path
 
         # Creation functions
@@ -310,15 +310,15 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     # Create a widget object, add to dictionary
     def addPrimitiveWidget(self, name):
-        widget = PrimitiveWidget(name)
-        primitive_widgets[name] = widget
+        widget = primitiveWidget(name)
+        self.primitive_widgets[name] = widget
         pass
 
     # Refresh the UI with any new primitives in the dictionary
     def refreshPrimitiveWidgets(self):
         clear_layout(self.gallery_layout)
         # Read the prim file, and get the name of the primitives, create widgets for them
-        for widget in primitive_widgets.values():
+        for widget in self.primitive_widgets.values():
             self.gallery_layout.addWidget(widget)
         self.gallery_layout.addStretch()
 
@@ -340,6 +340,5 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
 
         name = self.primitive_name.text()
-        # ERROR
-        addPrimitiveWidget(name)
+        self.addPrimitiveWidget(name)
         savePrimitiveData(name)
