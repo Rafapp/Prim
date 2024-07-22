@@ -27,14 +27,10 @@ def get_current_prim_file_path():
     return current_prim_file_path
 
 def clear_layout(layout):
-    if not layout: return
-    while layout.count():
-        item = layout.takeAt(0)
-        widget = item.widget()
-        if widget is not None:
-            widget.deleteLater()
-        else:
-            clear_layout(item.layout())
+  while layout.count():
+    child = layout.takeAt(0)
+    if child.widget():
+      child.widget().setParent(None)
 
 def mayaWindow():
     main_window_ptr = omui.MQtUtil.mainWindow()
@@ -57,9 +53,7 @@ class primitiveWidget(QtWidgets.QWidget):
         self.name = name
 
         # Get thumbnail, set to default if not found 
-        thumbnail_path = self.getThumbnail()
-        if not thumbnail_path: thumbnail_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails/default.png"
-        self.thumbnail_path = thumbnail_path
+        self.thumbnail_path = self.getThumbnail()
 
         # Creation functions
         self.createWidgets()
@@ -93,8 +87,8 @@ class primitiveWidget(QtWidgets.QWidget):
 
         # Check if mesh with that specific name was found.
         if not image_path:
-            print(f"Error: Could not find thumbnail for primitive \"{self.name}\"")
-            return
+            print(f"Error: Could not find thumbnail for primitive \"{self.name}\", setting to default ...")
+            image_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails/default.png"
 
         return image_path
      
@@ -134,7 +128,8 @@ class primitiveWidget(QtWidgets.QWidget):
 
     def deletePrimitive(self):
         deletePrimitiveData(self.name)
-        pass
+        del mainWindow.window_instance.primitive_widgets[self.name]
+        mainWindow.window_instance.refreshPrimitiveWidgets()
 
 class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     window_instance = None
@@ -221,11 +216,11 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         main_layout.addWidget(self.saveprimitive_button)
         main_layout.addWidget(self.scroll_area)
 
-        gallery_widget = QtWidgets.QWidget()  # Widget to contain the gallery layout
-        self.gallery_layout = QtWidgets.QVBoxLayout(gallery_widget)
+        self.gallery_widget = QtWidgets.QWidget()  # Widget to contain the gallery layout
+        self.gallery_layout = QtWidgets.QVBoxLayout(self.gallery_widget)
 
         self.gallery_layout.addStretch()
-        self.scroll_area.setWidget(gallery_widget)  # Set the gallery widget as the scroll area's widget
+        self.scroll_area.setWidget(self.gallery_widget)  # Set the gallery widget as the scroll area's widget
 
     def createConnections(self):
         self.saveprimitive_button.clicked.connect(self.savePrimitive)
@@ -312,14 +307,17 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def addPrimitiveWidget(self, name):
         widget = primitiveWidget(name)
         self.primitive_widgets[name] = widget
-        pass
+        self.refreshPrimitiveWidgets()
 
     # Refresh the UI with any new primitives in the dictionary
     def refreshPrimitiveWidgets(self):
+        print("Cached prims: ")
+        print(self.primitive_widgets)
         clear_layout(self.gallery_layout)
-        # Read the prim file, and get the name of the primitives, create widgets for them
-        for widget in self.primitive_widgets.values():
+
+        for name, widget in self.primitive_widgets.items():
             self.gallery_layout.addWidget(widget)
+            print(f"Added widget: {name} to layout")
         self.gallery_layout.addStretch()
 
     def redirectHelp(self):
