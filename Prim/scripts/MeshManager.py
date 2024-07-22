@@ -193,3 +193,11 @@ def deletePrimitiveData(mesh_name):
                 skip = False
  
     print("Succesfully deleted primitive: " + "\"" + mesh_name + "\"")
+
+# Generates .obj files from .prim file
+def generateMeshesFromPrimFile(prim_file):
+    # Get name of the mesh
+    # Get data from beginMesh to endMesh
+    # write data from beginMesh to endMesh to a .obj file
+
+    pass

@@ -289,6 +289,18 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.updateCurrentFile(path[0])
         print(f"Opened primitive library: {current_prim_file_path}")
 
+        # TODO Update UI, generate OBJ files and generate thumbnail renders
+        primitive_names = [] 
+        with open(current_prim_file_path, 'r') as file:
+            previous_line = None
+            for line in file:
+                if 'beginMesh' in line:
+                    if previous_line:
+                        primitive_names.append(previous_line.strip())
+                previous_line = line
+        print(f"Found primitives: {primitive_names}")
+
+
     def exportPrimitiveFile(self):
         if current_prim_file_path == None:
             show_confirmation_dialog("Please open a primitive library first")
