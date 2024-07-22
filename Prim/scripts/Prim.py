@@ -309,10 +309,8 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.primitive_widgets[name] = widget
         self.refreshPrimitiveWidgets()
 
-    # Refresh the UI with any new primitives in the dictionary
+    # Refresh the UI with any primitive changes in the dictionary
     def refreshPrimitiveWidgets(self):
-        print("Cached prims: ")
-        print(self.primitive_widgets)
         clear_layout(self.gallery_layout)
 
         for name, widget in self.primitive_widgets.items():

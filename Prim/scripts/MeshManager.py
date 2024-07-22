@@ -170,12 +170,26 @@ def deletePrimitiveData(mesh_name):
 
     # Check if mesh with that specific name was found.
     if not mesh_path:
-        print("Error: Could not find mesh for primitive \"" + mesh_name + "\"")
+        print("Error: Could not find mesh for primitive \"" + mesh_name + "\" to delete ...")
         return
 
     # Delete the mesh's .obj file
     os.remove(mesh_path)
 
-    # TODO: Delete primitive from the .prim file 
+    # Delete primitive data from the .prim file 
+    from Prim import get_current_prim_file_path
+    primfile = get_current_prim_file_path()
+    with open(primfile, 'r') as file:
+        lines = file.readlines()
+    
+    with open(primfile, 'w') as file:
+        skip = False
+        for line in lines:
+            if mesh_name in line:
+                skip = True
+            if not skip:
+                file.write(line)
+            if skip and "endMesh" in line:
+                skip = False
  
     print("Succesfully deleted primitive: " + "\"" + mesh_name + "\"")
