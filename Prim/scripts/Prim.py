@@ -9,7 +9,7 @@ except ImportError:
     from PySide6 import QtCore
     from PySide6 import QtGui
 
-from MeshManager import instanceMesh, savePrimitiveData, deletePrimitiveData
+from MeshManager import instanceMesh, savePrimitiveData, deletePrimitiveData, generateMeshesFromPrimFile
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 import maya.OpenMayaUI as omui
 import maya.cmds as cmds
@@ -244,12 +244,13 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         user_file_name = None
 
         # Give prompt with naming
-        prompt = cmds.promptDialog(title="New"
-                                      , message="Create new primitive library:"
-                                      , messageAlign="center"
-                                      , button=["Create", "Cancel"]
-                                      , defaultButton="Create"
-                                      , cancelButton="Cancel")
+        prompt = cmds.promptDialog(title="New",
+                                   message="Create new primitive library:",
+                                   messageAlign="center",
+                                   button=["Create", "Cancel"],
+                                   defaultButton="Create",
+                                   cancelButton="Cancel")
+
         if prompt != "Create": return
         user_file_name = cmds.promptDialog(query=True, text=True)
         dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/libraries"
@@ -286,20 +287,13 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/libraries"
         path = cmds.fileDialog2(startingDirectory=dir_path, fileFilter="Primitive Library(*.prim)", fileMode=1, dialogStyle=2)
 
-        self.updateCurrentFile(path[0])
+        if path[0]: self.updateCurrentFile(path[0])
         print(f"Opened primitive library: {current_prim_file_path}")
 
-        # TODO Update UI, generate OBJ files and generate thumbnail renders
-        primitive_names = [] 
-        with open(current_prim_file_path, 'r') as file:
-            previous_line = None
-            for line in file:
-                if 'beginMesh' in line:
-                    if previous_line:
-                        primitive_names.append(previous_line.strip())
-                previous_line = line
-        print(f"Found primitives: {primitive_names}")
-
+        # TODO Delete all .obj meshes and thumbnails
+        # Update UI, generate OBJ files 
+        # and generate thumbnail renders
+        generateMeshesFromPrimFile()
 
     def exportPrimitiveFile(self):
         if current_prim_file_path == None:
@@ -307,7 +301,6 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
 
         def copyAndRename(src_path, dest_path, new_name):
-            print(f"copy from src: {src_path} to: {dest_path}")
             shutil.copy(src_path, dest_path + "/" + new_name)
 
         path = cmds.fileDialog2(fileMode=0, caption="Save As", fileFilter="Primitive Library(*.prim)") 
@@ -327,7 +320,6 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         for name, widget in self.primitive_widgets.items():
             self.gallery_layout.addWidget(widget)
-            print(f"Added widget: {name} to layout")
         self.gallery_layout.addStretch()
 
     def redirectHelp(self):

@@ -32,9 +32,36 @@ def show_error_dialog(prompt):
         dismissString='Ok'
     )
 
-# Renders a 3/4, lambertian, black and white preview of the primitive. Stores as .png image.
-def renderMeshPreview(name, objData):
-    # Check if corresponding .obj file exists
+# Renders a 3/4 view, lambertian, black and white preview of the primitive. Stores as .png image.
+def renderMeshPreview(mesh_name):
+    # Navigate to meshes folder in module 
+    dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
+    
+    # Check for files in /meshes
+    files = cmds.getFileList(folder = dir_path)
+    if not files: 
+        print("Error: Meshes folder is empty") 
+        return
+
+    # Check for .obj files in /meshes
+    obj_files = [f for f in files if f.endswith('.obj')]
+    if not obj_files: 
+        print("Error: No .obj files found in meshes folder") 
+        return
+
+    mesh_path = None
+    for item in obj_files:
+        full_name = os.path.join(dir_path, item)
+        file_name, ext = os.path.splitext(os.path.basename(full_name))
+        if file_name == mesh_name:
+            mesh_path = full_name
+            break
+
+    # Check if mesh with that specific name was found.
+    if not mesh_path:
+        print("Error: Could not find mesh for primitive \"" + mesh_name + "\"")
+        return
+
     # Render the mesh
     pass
 
@@ -195,9 +222,33 @@ def deletePrimitiveData(mesh_name):
     print("Succesfully deleted primitive: " + "\"" + mesh_name + "\"")
 
 # Generates .obj files from .prim file
-def generateMeshesFromPrimFile(prim_file):
+def generateMeshesFromPrimFile():
     # Get name of the mesh
     # Get data from beginMesh to endMesh
-    # write data from beginMesh to endMesh to a .obj file
+    from Prim import get_current_prim_file_path
+    primfile = get_current_prim_file_path()
 
-    pass
+    obj_meshes = {}
+
+    # Read prim file, create dictionary of mesh name to mesh obj data 
+    with open(primfile, 'r') as file:
+        lines = file.readlines()
+        previous_line = None
+        obj_data = []
+        skip = True 
+        name = ""
+
+        for line in lines:
+            current_line = line.strip()
+            if "beginMesh" in line:
+                name = previous_line
+                skip = False
+            if skip and "endMesh" in line:
+                skip = False
+                print(f"Saving: {name}")
+                obj_meshes[name] = obj_data
+                obj_data = []
+            if not skip:
+                obj_data.append(current_line)
+            
+            previous_line = current_line
