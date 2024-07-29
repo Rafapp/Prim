@@ -12,7 +12,7 @@ except ImportError:
 from MeshManager import instanceMesh, savePrimitiveData, deletePrimitiveData, generateMeshesFromPrimFile
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 import maya.OpenMayaUI as omui
-import maya.cmds as cmds
+import maya.cmds as cmds # Note: CMDS should go on separate file
 import maya.mel as mel
 import subprocess
 import shutil
