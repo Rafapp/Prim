@@ -1,6 +1,6 @@
 try:
     from shiboken2 import wrapInstance # Convert C++ pointers to python
-    from PySide2 import QtCore # Core classes and functions
+    from PySide2 import QtCore 
     from PySide2 import QtWidgets
     from PySide2 import QtGui
 except ImportError:
@@ -12,7 +12,7 @@ except ImportError:
 from MeshManager import instanceMesh, savePrimitiveData, deletePrimitiveData, generateMeshesFromPrimFile
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 import maya.OpenMayaUI as omui
-import maya.cmds as cmds # Note: CMDS should go on separate file
+import maya.cmds as cmds # TODO: CMDS should go on separate file
 import maya.mel as mel
 import subprocess
 import shutil
@@ -36,7 +36,6 @@ def mayaWindow():
     main_window_ptr = omui.MQtUtil.mainWindow()
     return wrapInstance(int(main_window_ptr), QtWidgets.QWidget)
 
-# Helper function, creates error dialogue
 def show_error_dialog(prompt):
     cmds.confirmDialog(
         title='Error',
@@ -45,6 +44,13 @@ def show_error_dialog(prompt):
         dismissString='Ok'
     )
 
+"""
+Widget that shows a primitive in the UI. Contains:
+- primitive name
+- primitive thumbnail
+- create button
+- delete button
+"""
 class primitiveWidget(QtWidgets.QWidget):
     # Constructor: PrimitiveWidget("path")
     def __init__(self, name):
@@ -63,7 +69,6 @@ class primitiveWidget(QtWidgets.QWidget):
         self.setSizePolicy(QtWidgets.QSizePolicy.Policy.Preferred, QtWidgets.QSizePolicy.Policy.Fixed)
 
     def getThumbnail(self):
-        # Check for files in /thumbnails
         dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails"
         files = cmds.getFileList(folder = dir_path)
 
@@ -71,7 +76,6 @@ class primitiveWidget(QtWidgets.QWidget):
             print("Error: Thumbnails folder is empty") 
             return
 
-        # Check for .png files in /thumbnails
         png_files = [f for f in files if f.endswith('.png')]
         if not png_files: 
             print("Error: No .png files found in thumbnails folder") 
@@ -85,7 +89,6 @@ class primitiveWidget(QtWidgets.QWidget):
                 image_path = full_name
                 break
 
-        # Check if mesh with that specific name was found.
         if not image_path:
             print(f"Error: Could not find thumbnail for primitive \"{self.name}\", setting to default ...")
             image_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails/default.png"
@@ -131,6 +134,9 @@ class primitiveWidget(QtWidgets.QWidget):
         del mainWindow.window_instance.primitive_widgets[self.name]
         mainWindow.window_instance.refreshPrimitiveWidgets()
 
+"""
+Main plugin window. Is child of maya's main window.
+"""
 class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     window_instance = None
     primitive_widgets = {} 
@@ -157,6 +163,7 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if sys.platform=="darwin":
             self.setWindowFlag(QtCore.Qt.Tool, True)
 
+        # Creation functions
         self.createMenus()
         self.createWidgets()
         self.createLayouts()
@@ -225,13 +232,11 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def createConnections(self):
         self.saveprimitive_button.clicked.connect(self.savePrimitive)
 
-    # Connection functions
+    # Updates current .prim file label
     def updateCurrentFile(self, file_path): 
-        # Update current file path data
         global current_prim_file_path 
         current_prim_file_path = file_path
 
-        # Update current file label at top of window
         file_name = os.path.basename(file_path).split('.')
         title = file_name[0]
         if len(title) > 15:
@@ -240,6 +245,8 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.current_file_label.setText("Current library: " + title)
         print(f"Current prim file updated to: {file_path}")
 
+    # User creates new primitive library file
+    # TODO: Change semantics to "primitive library" instead of saying "primitive file" everywhere
     def newPrimitiveFile(self):
         user_file_name = None
 
@@ -264,7 +271,6 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 for item in prim_files:
                     full_name = os.path.join(dir_path, item)
                     file_name, ext = os.path.splitext(os.path.basename(full_name))
-                    # TODO Create a confirm dialog function, no reason to repeat this ...
                     if file_name == user_file_name:
                         show_confirmation_dialog("A local primitive already has this name, try another name.")
                         return
@@ -282,15 +288,24 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Update current file
         self.updateCurrentFile(os.path.join(dir_path, full_filename))
 
+    # Imports a primitive library
     def openPrimitiveFile(self):
+
         # Open file, and update current file data
         dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/libraries"
         path = cmds.fileDialog2(startingDirectory=dir_path, fileFilter="Primitive Library(*.prim)", fileMode=1, dialogStyle=2)
-
         if path[0]: self.updateCurrentFile(path[0])
         print(f"Opened primitive library: {current_prim_file_path}")
 
-        # TODO Delete all .obj meshes and thumbnails
+        # Delete all .obj meshes 
+        dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
+        files = cmds.getFileList(folder = dir_path)
+        if files: 
+            obj_files = [f for f in files if f.endswith('.obj')]
+            if obj_files: 
+
+
+        # Delete all thumbnails
         # Update UI, generate OBJ files 
         # and generate thumbnail renders
         generateMeshesFromPrimFile()
