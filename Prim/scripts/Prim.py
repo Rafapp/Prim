@@ -303,6 +303,7 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         if files: 
             obj_files = [f for f in files if f.endswith('.obj')]
             if obj_files: 
+                pass
 
 
         # Delete all thumbnails

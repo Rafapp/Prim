@@ -1,13 +1,14 @@
 import maya.api.OpenMaya as om
-import maya.cmds as cmds #TODO: Move maya.cmds to separate file
+import maya.cmds as cmds
 import maya.mel as mel
 import sys
 import os
 
-# Maya Python API 2.0
+# We are using Maya Python API 2.0
 def maya_useNewAPI():
     pass
 
+# Helper function, creates a confirmation dialogue
 def show_confirmation_dialog(prompt):
     result = cmds.confirmDialog(
         title='Warning',
@@ -22,6 +23,7 @@ def show_confirmation_dialog(prompt):
     else:
         return False
 
+# Helper function, creates error dialogue
 def show_error_dialog(prompt):
     cmds.confirmDialog(
         title='Error',
@@ -30,26 +32,23 @@ def show_error_dialog(prompt):
         dismissString='Ok'
     )
 
-"""
-- Render 3/4 view, simple lambertian black and white preview of the primitive
-- Saves output as .png file in /thumbnails
-"""
+# Renders a 3/4 view, lambertian, black and white preview of the primitive. Stores as .png image.
 def renderMeshPreview(name, objData):
     # Check if corresponding .obj file exists
     # Render the mesh
     pass
 
-"""
-- Instance an existing primitive's mesh to the maya scene using its name
-"""
 def instanceMesh(mesh_name):
+    # Navigate to meshes folder in module 
     dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
     
+    # Check for files in /meshes
     files = cmds.getFileList(folder = dir_path)
     if not files: 
         print("Error: Meshes folder is empty") 
         return
 
+    # Check for .obj files in /meshes
     obj_files = [f for f in files if f.endswith('.obj')]
     if not obj_files: 
         print("Error: No .obj files found in meshes folder") 
@@ -79,10 +78,7 @@ def instanceMesh(mesh_name):
 
     print("Succesfully created primitive: " + "\"" + mesh_name + "\"")
 
-"""
-- Get selected mesh in scene
-- Add its name, and .obj text data to .prim file
-"""
+# Saves selected mesh in the scene to the .prim file, and updates library.
 def savePrimitiveData(mesh_name):
     if not mesh_name:
         show_error_dialog("Please provide a primitive name")
@@ -91,6 +87,8 @@ def savePrimitiveData(mesh_name):
     # Check for files in /meshes
     dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
     files = cmds.getFileList(folder = dir_path)
+
+    if files: 
         obj_files = [f for f in files if f.endswith('.obj')]
         if obj_files: 
             for item in obj_files:
@@ -127,7 +125,7 @@ def savePrimitiveData(mesh_name):
     newprimitive_str = f"\n{mesh_name}\nbeginMesh\n"
     prim_file.write(newprimitive_str)
 
-    # Add .obj text data
+    # Add .obj data
     obj_file = open(full_dir_path, "r")
     next(obj_file)
     next(obj_file)
@@ -142,40 +140,46 @@ def savePrimitiveData(mesh_name):
 
     print(f"Updated .prim file: {current_prim}")
 
-"""
-- Deletes mesh text data from .prim file
-- Deletes .obj mesh
-- Deletes .png thumbnail
-"""
+# Deletes mesh from .prim file, its .obj mesh, and its preview.
 def deletePrimitiveData(mesh_name):
     confirm = show_confirmation_dialog("Are you sure you wish to delete this primitive?\n\nThis action is irreversible!")
     if confirm == False: return
+    # TODO: Edge case, closing the window!
 
+    # Navigate to meshes folder in module 
     dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
     
-    # Delete .obj file if existing
+    # Check for files in /meshes
     files = cmds.getFileList(folder = dir_path)
-    if files: 
-        obj_files = [f for f in files if f.endswith('.obj')]
-        if obj_files: 
-            mesh_path = None
-            for item in obj_files:
-                full_name = os.path.join(dir_path, item)
-                file_name, ext = os.path.splitext(os.path.basename(full_name))
-                if file_name == mesh_name:
-                    mesh_path = full_name
-                    break
+    if not files: 
+        print("Error: Meshes folder is empty") 
+        return
 
-            if mesh_path:
-                os.remove(mesh_path)
-            else: 
-                print("Error: Could not find mesh for primitive \"" + mesh_name + "\" to delete, skipping deletion ...")
-            
-    # Delete primitive text data from the .prim file 
-    # TODO: Check if there's a better way to do this without creating circular dependencies
+    # Check for .obj files in /meshes
+    obj_files = [f for f in files if f.endswith('.obj')]
+    if not obj_files: 
+        print("Error: No .obj files found in meshes folder") 
+        return
+
+    mesh_path = None
+    for item in obj_files:
+        full_name = os.path.join(dir_path, item)
+        file_name, ext = os.path.splitext(os.path.basename(full_name))
+        if file_name == mesh_name:
+            mesh_path = full_name
+            break
+
+    # Check if mesh with that specific name was found.
+    if not mesh_path:
+        print("Error: Could not find mesh for primitive \"" + mesh_name + "\" to delete ...")
+        return
+
+    # Delete the mesh's .obj file
+    os.remove(mesh_path)
+
+    # Delete primitive data from the .prim file 
     from Prim import get_current_prim_file_path
     primfile = get_current_prim_file_path()
-
     with open(primfile, 'r') as file:
         lines = file.readlines()
     
@@ -188,16 +192,13 @@ def deletePrimitiveData(mesh_name):
                 file.write(line)
             if skip and "endMesh" in line:
                 skip = False
-
-    #TODO: Delete .png thumbnails from \thumbnails folder
+ 
     print("Succesfully deleted primitive: " + "\"" + mesh_name + "\"")
 
-"""
-- Delete all .obj files
-- Generate all new meshes from name and .obj text data in 
-.prim file
-"""
+# Generates .obj files from .prim file
 def generateMeshesFromPrimFile():
+    # Get name of the mesh
+    # Get data from beginMesh to endMesh
     from Prim import get_current_prim_file_path
     primfile = get_current_prim_file_path()
 
@@ -223,5 +224,5 @@ def generateMeshesFromPrimFile():
                 obj_data = []
             if not skip:
                 obj_data.append(current_line)
+            
             previous_line = current_line
-    # TODO: Now that dictionary has name, and .obj file text data, generate and save .obj meshes
