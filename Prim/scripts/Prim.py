@@ -306,7 +306,16 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     os.remove(meshes_path + f)
 
 
-        # Delete all thumbnails
+        # Delete all thumbnails (excluding the default.png)
+        thumbnails_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails/"
+        files = cmds.getFileList(folder = thumbnails_path)
+        if files: 
+            png_files = [f for f in files if f.endswith('.png')]
+            if png_files: 
+                for f in png_files:
+                    if f == "default.png": continue
+                    os.remove(thumbnails_path + f)
+
         # Update UI, generate OBJ files 
         # and generate thumbnail renders
         generateMeshesFromPrimFile()
