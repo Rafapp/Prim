@@ -8,6 +8,7 @@ import os
 def maya_useNewAPI():
     pass
 
+# Helper function, creates a confirmation dialogue
 def show_confirmation_dialog(prompt):
     result = cmds.confirmDialog(
         title='Warning',
@@ -22,6 +23,7 @@ def show_confirmation_dialog(prompt):
     else:
         return False
 
+# Helper function, creates error dialogue
 def show_error_dialog(prompt):
     cmds.confirmDialog(
         title='Error',
@@ -31,21 +33,11 @@ def show_error_dialog(prompt):
     )
 
 # Renders a 3/4 view, lambertian, black and white preview of the primitive. Stores as .png image.
-"""
-Renders preview thumbnail of primitive
-- Takes obj data, renders in maya a 3/4 preview of the primitive
-- Saves .png preview to /../primitives/thumbnails
-"""
 def renderMeshPreview(name, objData):
     # Check if corresponding .obj file exists
     # Render the mesh
     pass
 
-"""
-Instances primitive to Maya scene if exists 
-- Uses same name as primitive
-- Increases instance count if instanced multiple times (001, 002 etc.)
-"""
 def instanceMesh(mesh_name):
     # Navigate to meshes folder in module 
     dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
@@ -87,17 +79,6 @@ def instanceMesh(mesh_name):
     print("Succesfully created primitive: " + "\"" + mesh_name + "\"")
 
 # Saves selected mesh in the scene to the .prim file, and updates library.
-"""
-Saves selected mesh in maya scene to .prim file, updates library
-- Takes .obj data and writes it to the .prim file with the following convention:
-
-<mesh name>
-beginMesh
-<obj data>
-...
-endMesh
-
-"""
 def savePrimitiveData(mesh_name):
     if not mesh_name:
         show_error_dialog("Please provide a primitive name")
@@ -159,12 +140,7 @@ def savePrimitiveData(mesh_name):
 
     print(f"Updated .prim file: {current_prim}")
 
-"""
-Deletes ALL data from an existing primitive, including:
-- OBJ data in .prim file
-- cached .obj mesh
-- cached .png preview thumbnail
-"""
+# Deletes mesh from .prim file, its .obj mesh, and its preview.
 def deletePrimitiveData(mesh_name):
     confirm = show_confirmation_dialog("Are you sure you wish to delete this primitive?\n\nThis action is irreversible!")
     if confirm == False: return
@@ -218,10 +194,7 @@ def deletePrimitiveData(mesh_name):
  
     print("Succesfully deleted primitive: " + "\"" + mesh_name + "\"")
 
-"""
-Cache .obj files from .prim file
-- Parses the file, and caches ALL primitives using their .obj data
-"""
+# Generates .obj files from .prim file
 def generateMeshesFromPrimFile():
     # Get name of the mesh
     # Get data from beginMesh to endMesh

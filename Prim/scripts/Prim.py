@@ -180,8 +180,8 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.file_menu.addAction(self.new_action)
         self.file_menu.addAction(self.open_action)
         self.file_menu.addAction(self.export_action)
-        self.new_action.triggered.connect(self.newPrimitiveFile)
-        self.open_action.triggered.connect(self.openPrimitiveFile)
+        self.new_action.triggered.connect(self.newPrimitiveLibrary)
+        self.open_action.triggered.connect(self.openPrimitiveLibrary)
         self.export_action.triggered.connect(self.exportPrimitiveFile)
 
         # "Prim" menu
@@ -246,8 +246,7 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         print(f"Current prim file updated to: {file_path}")
 
     # User creates new primitive library file
-    # TODO: Change semantics to "primitive library" instead of saying "primitive file" everywhere
-    def newPrimitiveFile(self):
+    def newPrimitiveLibrary(self):
         user_file_name = None
 
         # Give prompt with naming
@@ -289,21 +288,22 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.updateCurrentFile(os.path.join(dir_path, full_filename))
 
     # Imports a primitive library
-    def openPrimitiveFile(self):
+    def openPrimitiveLibrary(self):
 
         # Open file, and update current file data
-        dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/libraries"
-        path = cmds.fileDialog2(startingDirectory=dir_path, fileFilter="Primitive Library(*.prim)", fileMode=1, dialogStyle=2)
+        libraries_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/libraries"
+        path = cmds.fileDialog2(startingDirectory=libraries_path, fileFilter="Primitive Library(*.prim)", fileMode=1, dialogStyle=2)
         if path[0]: self.updateCurrentFile(path[0])
         print(f"Opened primitive library: {current_prim_file_path}")
 
         # Delete all .obj meshes 
-        dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
-        files = cmds.getFileList(folder = dir_path)
+        meshes_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes/"
+        files = cmds.getFileList(folder = meshes_path)
         if files: 
             obj_files = [f for f in files if f.endswith('.obj')]
             if obj_files: 
-                pass
+                for f in obj_files:
+                    os.remove(meshes_path + f)
 
 
         # Delete all thumbnails
