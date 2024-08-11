@@ -196,8 +196,6 @@ def deletePrimitiveData(mesh_name):
 
 # Generates .obj files from .prim file
 def generateMeshesFromPrimFile():
-    # Get name of the mesh
-    # Get data from beginMesh to endMesh
     from Prim import get_current_prim_file_path
     primfile = get_current_prim_file_path()
 
@@ -216,12 +214,20 @@ def generateMeshesFromPrimFile():
             if "beginMesh" in line:
                 name = previous_line
                 skip = False
-            if skip and "endMesh" in line:
-                skip = False
-                print(f"Saving: {name}")
+            if skip == False:
+                obj_data.append(current_line)
+            if "endMesh" in line:
+                skip = True 
+                print("Generated: " + name + ".obj")
                 obj_meshes[name] = obj_data
                 obj_data = []
-            if not skip:
-                obj_data.append(current_line)
             
             previous_line = current_line
+
+    # Create the .obj files from the dictionary
+    meshes_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes/"
+    print(obj_meshes)
+    for name, data in obj_meshes.items():
+        print("New mesh from .prim file: \"" + name + "\" created")
+        with open(os.path.join(meshes_path, name + ".obj"), 'w') as file:
+            file.write('\n'.join(data) + '\n')

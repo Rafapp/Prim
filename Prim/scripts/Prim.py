@@ -131,7 +131,8 @@ class primitiveWidget(QtWidgets.QWidget):
 
     def deletePrimitive(self):
         deletePrimitiveData(self.name)
-        del mainWindow.window_instance.primitive_widgets[self.name]
+        if self.name in mainWindow.window_instance.primitive_widgets:
+            del mainWindow.window_instance.primitive_widgets[self.name]
         mainWindow.window_instance.refreshPrimitiveWidgets()
 
 """
@@ -305,7 +306,6 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 for f in obj_files:
                     os.remove(meshes_path + f)
 
-
         # Delete all thumbnails (excluding the default.png)
         thumbnails_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails/"
         files = cmds.getFileList(folder = thumbnails_path)
@@ -316,11 +316,18 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     if f == "default.png": continue
                     os.remove(thumbnails_path + f)
 
-        # Update UI, generate OBJ files 
-        self.refreshPrimitiveWidgets()
-
-        # and generate thumbnail renders
+        # Generate .obj meshes from prim file 
         generateMeshesFromPrimFile()
+
+        # Update primitive UI using .obj meshes
+        self.primitive_widgets = {}
+        files = cmds.getFileList(folder = meshes_path)
+        if files: 
+            obj_files = [f for f in files if f.endswith('.obj')]
+            if obj_files: 
+                for f in obj_files:
+                    self.addPrimitiveWidget(f.split(".")[0])
+        self.refreshPrimitiveWidgets()
 
     def exportPrimitiveFile(self):
         if current_prim_file_path == None:
@@ -339,7 +346,6 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
     def addPrimitiveWidget(self, name):
         widget = primitiveWidget(name)
         self.primitive_widgets[name] = widget
-        self.refreshPrimitiveWidgets()
 
     # Refresh the UI with any primitive changes in the dictionary
     def refreshPrimitiveWidgets(self):
@@ -369,3 +375,4 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         name = self.primitive_name.text()
         self.addPrimitiveWidget(name)
         savePrimitiveData(name)
+        self.refreshPrimitiveWidgets()
