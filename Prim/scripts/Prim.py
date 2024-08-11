@@ -176,7 +176,7 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.file_menu = menu_bar.addMenu("File")
         self.new_action = QtGui.QAction("New", self)
         self.open_action = QtGui.QAction("Open", self)
-        self.export_action = QtGui.QAction("Export", self)
+        self.export_action = QtGui.QAction("Export current library", self)
         self.file_menu.addAction(self.new_action)
         self.file_menu.addAction(self.open_action)
         self.file_menu.addAction(self.export_action)
@@ -317,6 +317,8 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     os.remove(thumbnails_path + f)
 
         # Update UI, generate OBJ files 
+        self.refreshPrimitiveWidgets()
+
         # and generate thumbnail renders
         generateMeshesFromPrimFile()
 
