@@ -32,11 +32,21 @@ def show_error_dialog(prompt):
         dismissString='Ok'
     )
 
-# Renders a 3/4 view, lambertian, black and white preview of the primitive. Stores as .png image.
-def renderMeshPreview(name, objData):
-    # Check if corresponding .obj file exists
-    # Render the mesh
-    pass
+# TODO: Currently takes snapshot of viewport, should have UI functionality for artist to
+# choose his best preview angle.
+"""
+Renders a preview of the mesh being saved using the viewport camera
+- Saves as .png file in /../primitives/thumbnails
+"""
+def renderMeshPreview(name):
+    width = 100
+    height = 100
+    curFrame = int(cmds.currentTime(query=True))
+
+    dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails"
+    fullPath = dir_path + "/" + name + ".png"
+
+    cmds.playblast(fr=curFrame, v=False, fmt="image", c="png", orn=False, cf=fullPath, wh=[width,height], p=100)
 
 def instanceMesh(mesh_name):
     # Navigate to meshes folder in module 

@@ -9,7 +9,7 @@ except ImportError:
     from PySide6 import QtCore
     from PySide6 import QtGui
 
-from MeshManager import instanceMesh, savePrimitiveData, deletePrimitiveData, generateMeshesFromPrimFile
+from MeshManager import instanceMesh, savePrimitiveData, deletePrimitiveData, generateMeshesFromPrimFile, renderMeshPreview
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
 import maya.OpenMayaUI as omui
 import maya.cmds as cmds # TODO: CMDS should go on separate file
@@ -367,6 +367,7 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             except OSError:
                 print('Please open the link on your browser: ' + url)
 
+    #TODO: Check for file integrity here to avoid repetition in MeshManager
     def savePrimitive(self):
         if not current_prim_file_path:
             show_error_dialog("Open a primitive library (.prim) file first")
@@ -375,4 +376,5 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         name = self.primitive_name.text()
         self.addPrimitiveWidget(name)
         savePrimitiveData(name)
+        renderMeshPreview(name)
         self.refreshPrimitiveWidgets()
