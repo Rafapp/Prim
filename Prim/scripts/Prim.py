@@ -26,6 +26,20 @@ def get_current_prim_file_path():
     global current_prim_file_path
     return current_prim_file_path
 
+def show_decision_dialog(prompt):
+    result = cmds.confirmDialog(
+        title='Warning',
+        message=prompt,
+        button=['Yes', 'No'],
+        defaultButton='Yes',
+        cancelButton='No',
+        dismissString='No')
+
+    if result == 'Yes':
+        return True
+    else:
+        return False
+
 def clear_layout(layout):
   while layout.count():
     child = layout.takeAt(0)
@@ -86,6 +100,7 @@ class primitiveWidget(QtWidgets.QWidget):
             full_name = os.path.join(dir_path, item)
             file_name, ext = os.path.splitext(os.path.basename(full_name))
             if file_name == self.name:
+                print(f"Found thumbnail for primitive: {self.name}")
                 image_path = full_name
                 break
 
@@ -130,6 +145,9 @@ class primitiveWidget(QtWidgets.QWidget):
         instanceMesh(self.name)
 
     def deletePrimitive(self):
+        confirm = show_decision_dialog("Are you sure you wish to delete this primitive?\n\nThis action is irreversible!")
+        if confirm == False: return
+
         deletePrimitiveData(self.name)
         if self.name in mainWindow.window_instance.primitive_widgets:
             del mainWindow.window_instance.primitive_widgets[self.name]
@@ -374,7 +392,7 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             return
 
         name = self.primitive_name.text()
-        self.addPrimitiveWidget(name)
         savePrimitiveData(name)
         renderMeshPreview(name)
+        self.addPrimitiveWidget(name)
         self.refreshPrimitiveWidgets()

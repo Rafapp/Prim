@@ -8,20 +8,6 @@ import os
 def maya_useNewAPI():
     pass
 
-# Helper function, creates a confirmation dialogue
-def show_confirmation_dialog(prompt):
-    result = cmds.confirmDialog(
-        title='Warning',
-        message=prompt,
-        button=['Yes', 'No'],
-        defaultButton='Yes',
-        cancelButton='No',
-        dismissString='No')
-
-    if result == 'Yes':
-        return True
-    else:
-        return False
 
 # Helper function, creates error dialogue
 def show_error_dialog(prompt):
@@ -105,7 +91,7 @@ def savePrimitiveData(mesh_name):
                 full_name = os.path.join(dir_path, item)
                 file_name, ext = os.path.splitext(os.path.basename(full_name))
                 if file_name == mesh_name:
-                    show_error_dialog(f"Mesh with name {mesh_name} already exists. Please try a new name.")
+                    show_error_dialog(f"Mesh with name {mesh_name} already exists. Please try a new name.\n\n(Note: Saving a primitive with the same name will update its preview)")
                     return
 
     selected = cmds.ls(sl=True,long=True) or []
@@ -152,8 +138,6 @@ def savePrimitiveData(mesh_name):
 
 # Deletes mesh from .prim file, its .obj mesh, and its preview.
 def deletePrimitiveData(mesh_name):
-    confirm = show_confirmation_dialog("Are you sure you wish to delete this primitive?\n\nThis action is irreversible!")
-    if confirm == False: return
 
     # Navigate to meshes folder in module 
     dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
