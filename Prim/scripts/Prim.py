@@ -306,6 +306,10 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         # Update current file
         self.updateCurrentFile(os.path.join(dir_path, full_filename))
 
+        # Clear widgets
+        self.primitive_widgets = {}
+        self.refreshPrimitiveWidgets()
+
     # Imports a primitive library
     def openPrimitiveLibrary(self):
 
@@ -324,15 +328,16 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                 for f in obj_files:
                     os.remove(meshes_path + f)
 
+        #TODO: This deletes all images, but assumes they are regenerated on batch.
         # Delete all thumbnails (excluding the default.png)
-        thumbnails_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails/"
-        files = cmds.getFileList(folder = thumbnails_path)
-        if files: 
-            png_files = [f for f in files if f.endswith('.png')]
-            if png_files: 
-                for f in png_files:
-                    if f == "default.png": continue
-                    os.remove(thumbnails_path + f)
+#        thumbnails_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails/"
+#        files = cmds.getFileList(folder = thumbnails_path)
+#       if files: 
+#           png_files = [f for f in files if f.endswith('.png')]
+#           if png_files: 
+#               for f in png_files:
+#                   if f == "default.png": continue
+#                   os.remove(thumbnails_path + f)
 
         # Generate .obj meshes from prim file 
         generateMeshesFromPrimFile()
