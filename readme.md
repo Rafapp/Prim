@@ -10,7 +10,7 @@
 ## Installation
 ### Adding as a Maya module:
 
-1. Download and unzip the latest release of Prim in a location of your choosing
+1. Download and unzip the [latest release](https://github.com/Rafapp/Prim/releases) of Prim in a location of your choosing
 2. Go to maya env file. Add module path to a user created dir.
 3. Put prim in that dir.
 4. Run maya, plugin manager, and click on load and enable. Enable auto load too.
