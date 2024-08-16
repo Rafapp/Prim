@@ -5,12 +5,25 @@
 </div>
 
 ## Features
-- First feature
+- Saving in-scene meshes as named primitives to `.prim` library.
+- Exporting and Importing a primitive library with data from all its meshes using the `.prim` file format.
+- Mesh thumbnails, with custom capture angles.
 
 ## Installation
 ### Adding as a Maya module:
 
-1. Download and unzip the [latest release](https://github.com/Rafapp/Prim/releases) of Prim in a location of your choosing
-2. Go to maya env file. Add module path to a user created dir.
-3. Put prim in that dir.
-4. Run maya, plugin manager, and click on load and enable. Enable auto load too.
+[Video tutorial](https://youtu.be/OK2ueSc0YoU)
+
+1. Download, and unzip the [latest release](https://github.com/Rafapp/Prim/releases) of Prim in a location of your choosing.
+2. Adding the environment file:
+- a
+- b
+- c
+Add to maya .env found here:
+  /Users/rafa/Library/Preferences/Autodesk/maya/2025/
+This line:
+  MAYA_MODULE_PATH = /Users/rafa/Documents/Dev/Prim/Prim
+
+4. Go to maya env file. Add module path to a user created dir.
+5. Put prim in that dir.
+6. Run maya, plugin manager, and click on load and enable. Enable auto load too.
