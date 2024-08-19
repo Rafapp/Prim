@@ -6,8 +6,11 @@
 
 ## Features
 - Saving in-scene meshes as named primitives to `.prim` library.
+- ( INSERT GIF )
 - Exporting and Importing a primitive library with data from all its meshes using the `.prim` file format.
+- ( INSERT GIF )
 - Mesh thumbnails, with custom capture angles.
+- ( INSERT GIF )
 
 ## Installation
 ### Adding as a Maya module:
