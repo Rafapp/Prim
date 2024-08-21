@@ -5,12 +5,15 @@
 </div>
 
 ## Features
-- Saving in-scene meshes as named primitives to `.prim` library.
-- ( INSERT GIF )
-- Exporting and Importing a primitive library with data from all its meshes using the `.prim` file format.
-- ( INSERT GIF )
-- Mesh thumbnails, with custom capture angles.
-- ( INSERT GIF )
+## TODO: Make this nice like the one in jelly engine using a table
+<div align = "center">
+  <h3>Saving in-scene meshes as named primitives to `.prim` library</h2>
+  <img src = https://github.com/user-attachments/assets/f375b1e3-6fd5-4b30-ba3c-27cec5eafc44 width = "450px" align = "center">
+  <h3>Exporting and Importing a primitive library with data from all its meshes using the `.prim` file format</h3>
+  <img src = https://github.com/user-attachments/assets/f375b1e3-6fd5-4b30-ba3c-27cec5eafc44 width = "450px" align = "center">
+  <h3>Mesh thumbnails, with custom capture angles</h3>
+  <img src = https://github.com/user-attachments/assets/f375b1e3-6fd5-4b30-ba3c-27cec5eafc44 width = "450px" align = "center">
+</div>
 
 ## Installation
 [VIDEO TUTORIAL AVAILABLE](https://youtu.be/OK2ueSc0YoU)
