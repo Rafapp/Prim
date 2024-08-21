@@ -13,9 +13,7 @@
 - ( INSERT GIF )
 
 ## Installation
-### Adding as a Maya module:
-
-[Video tutorial](https://youtu.be/OK2ueSc0YoU)
+[VIDEO TUTORIAL AVAILABLE](https://youtu.be/OK2ueSc0YoU)
 
 1. Download, and unzip the [latest release](https://github.com/Rafapp/Prim/releases) of `Prim.zip` in a location of your choosing.
 2. Adding the module to maya's environment file:
@@ -23,16 +21,17 @@
        * Windows: `C:\Users\<YourUsername>\Documents\maya\<MayaVersion>\Maya.env`
        * MacOS: `/Users/<YourUsernamer>/Library/Preferences/Autodesk/maya/2<MayaVersion>/Maya.env`
        * Linux: `/home/<YourUsername>/maya/<MayaVersion>/Maya.env`
+         
    2. Edit the `Maya.env` file with a text editor and add this line:
        * `MAYA_MODULE_PATH = <Path to your prim installation folder>`
        * Example: `MAYA_MODULE_PATH = /Users/rafa/Documents/Dev/Prim`
-3. 
-   
-Add to maya .env found here:
-  /Users/rafa/Library/Preferences/Autodesk/maya/2025/
-This line:
-  MAYA_MODULE_PATH = /Users/rafa/Documents/Dev/Prim/Prim
 
-5. Go to maya env file. Add module path to a user created dir.
-6. Put prim in that dir.
-7. Run maya, plugin manager, and click on load and enable. Enable auto load too.
+3. Open maya's plug-in manager in `Windows > Settings/Preferences > Plug-in manager`
+<img width="448" alt="image" src="https://github.com/user-attachments/assets/6f0fcf2b-7b05-401a-ae59-877a5559b25f">
+
+
+5. Search for `PrimPlugin.py` and check `Loaded` and `Auto load`
+<img width="637" alt="image" src="https://github.com/user-attachments/assets/cbe7ef5d-b455-420f-9345-ca1a04a6d369">
+
+6. Prim will be added to your `Custom` shelf
+<img width="1007" alt="Screenshot 2024-08-21 at 11 58 24 AM" src="https://github.com/user-attachments/assets/c71aca58-6700-4416-bc39-b11c37e8c279">
