@@ -30,7 +30,7 @@
 <img width="448" alt="image" src="https://github.com/user-attachments/assets/6f0fcf2b-7b05-401a-ae59-877a5559b25f">
 
 
-5. Search for `PrimPlugin.py` and check `Loaded` and `Auto load`
+5. Search for `PrimPlugin.py` and ONLY check `Loaded`. Do not check `Auto load`, this will duplicate icons in your shelf every time you open Maya.
 <img width="637" alt="image" src="https://github.com/user-attachments/assets/cbe7ef5d-b455-420f-9345-ca1a04a6d369">
 
 6. Prim will be added to your `Custom` shelf
