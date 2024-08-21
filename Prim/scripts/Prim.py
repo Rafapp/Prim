@@ -193,8 +193,8 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # "File" menu
         self.file_menu = menu_bar.addMenu("File")
-        self.new_action = QtGui.QAction("New", self)
-        self.open_action = QtGui.QAction("Open", self)
+        self.new_action = QtGui.QAction("New primtive library", self)
+        self.open_action = QtGui.QAction("Open primitive library", self)
         self.export_action = QtGui.QAction("Export current library", self)
         self.file_menu.addAction(self.new_action)
         self.file_menu.addAction(self.open_action)
@@ -205,7 +205,7 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # "Prim" menu
         self.prim_menu = menu_bar.addMenu("Prim")
-        self.refresh_action = QtGui.QAction("Refresh", self)
+        self.refresh_action = QtGui.QAction("Refresh primitives", self)
         self.help_action = QtGui.QAction("Help", self)
         self.prim_menu.addAction(self.refresh_action)
         self.prim_menu.addAction(self.help_action)
