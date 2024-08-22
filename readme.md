@@ -15,7 +15,6 @@
 </div>
 
 ## Installation
-[VIDEO TUTORIAL AVAILABLE](https://youtu.be/OK2ueSc0YoU)
 
 1. Download, and unzip the [latest release](https://github.com/Rafapp/Prim/releases) of `Prim.zip` in a location of your choosing.
 2. Adding the module to maya's environment file:
