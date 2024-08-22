@@ -36,3 +36,7 @@
 
 6. Prim will be added to your `Custom` shelf
 <img width="1007" alt="Screenshot 2024-08-21 at 11 58 24 AM" src="https://github.com/user-attachments/assets/c71aca58-6700-4416-bc39-b11c37e8c279">
+
+## Contributing
+
+This project is completely open source, meaning the community is not only allowed but encouraged to make pull requests! Feel free to contribute if there are any features you'd like to see, of any bugs needing fixes.
