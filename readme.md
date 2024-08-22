@@ -1,11 +1,11 @@
 <div align = "center">
   <h1>Prim</h1>
   <img src = https://github.com/Rafapp/Prim/assets/38381290/7b585bc9-704f-4745-8c1b-783d7c551255 width = "350px" align = "center">
-  <h2>A python Qt plugin for managing & sharing 3D primitives in Maya</h2>
+  <h3>A python Qt plugin for managing & sharing 3D primitives in Maya</h2>
 </div>
 
-## Features
 <div align = "center">
+  <h1>Features</h1>
   <h3>Saving in-scene meshes as named primitives to .prim library</h2>
   <img src = https://github.com/user-attachments/assets/f375b1e3-6fd5-4b30-ba3c-27cec5eafc44 width = "500px" align = "center">
   <h3>Exporting and Importing a primitive library with data from all its meshes using the .prim file format</h3>
