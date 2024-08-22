@@ -5,14 +5,13 @@
 </div>
 
 ## Features
-## TODO: Make this nice like the one in jelly engine using a table
 <div align = "center">
-  <h3>Saving in-scene meshes as named primitives to `.prim` library</h2>
-  <img src = https://github.com/user-attachments/assets/f375b1e3-6fd5-4b30-ba3c-27cec5eafc44 width = "450px" align = "center">
-  <h3>Exporting and Importing a primitive library with data from all its meshes using the `.prim` file format</h3>
-  <img src = https://github.com/user-attachments/assets/f375b1e3-6fd5-4b30-ba3c-27cec5eafc44 width = "450px" align = "center">
-  <h3>Mesh thumbnails, with custom capture angles</h3>
-  <img src = https://github.com/user-attachments/assets/f375b1e3-6fd5-4b30-ba3c-27cec5eafc44 width = "450px" align = "center">
+  <h3>Saving in-scene meshes as named primitives to .prim library</h2>
+  <img src = https://github.com/user-attachments/assets/f375b1e3-6fd5-4b30-ba3c-27cec5eafc44 width = "500px" align = "center">
+  <h3>Exporting and Importing a primitive library with data from all its meshes using the .prim file format</h3>
+  <img src = https://github.com/user-attachments/assets/0affb0ff-f554-4c14-89d1-05fdc6355153 width = "500px" align = "center">
+  <h3>Mesh thumbnails, with custom capture angles, and optional wireframe</h3>
+  <img src = https://github.com/user-attachments/assets/b843b96c-8052-4f4e-9bd0-d7067401446d width = "500px" align = "center">
 </div>
 
 ## Installation
