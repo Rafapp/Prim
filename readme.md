@@ -1,7 +1,7 @@
 <div align = "center">
   <h1>Prim</h1>
   <img src = https://github.com/Rafapp/Prim/assets/38381290/7b585bc9-704f-4745-8c1b-783d7c551255 width = "350px" align = "center">
-  <h3>An open-source python Qt plugin for managing & sharing 3D primitives in Maya</h2>
+  <h3>An open-source python Qt plugin for managing & sharing 3D primitives and meshes in Maya</h2>
 </div>
 
 <div align = "center">
