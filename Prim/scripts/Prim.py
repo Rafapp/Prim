@@ -3,11 +3,13 @@ try:
     from PySide2 import QtCore 
     from PySide2 import QtWidgets
     from PySide2 import QtGui
+    pyside_version = "pyside_2"
 except ImportError:
     from shiboken6 import wrapInstance 
     from PySide6 import QtWidgets
     from PySide6 import QtCore
     from PySide6 import QtGui
+    pyside_version = "pyside_6"
 
 from MeshManager import instanceMesh, savePrimitiveData, deletePrimitiveData, generateMeshesFromPrimFile, renderMeshPreview
 from maya.app.general.mayaMixin import MayaQWidgetDockableMixin
@@ -193,9 +195,16 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # "File" menu
         self.file_menu = menu_bar.addMenu("File")
-        self.new_action = QtGui.QAction("New primtive library", self)
-        self.open_action = QtGui.QAction("Open primitive library", self)
-        self.export_action = QtGui.QAction("Export current library", self)
+
+        if pyside_version == "pyside_6":
+            self.new_action = QtGui.QAction("New primitive library", self)
+            self.open_action = QtGui.QAction("Open primitive library", self)
+            self.export_action = QtGui.QAction("Export current library", self)
+        elif pyside_version == "pyside_2":
+            self.new_action = QtWidgets.QAction("New primitive library", self)
+            self.open_action = QtWidgets.QAction("Open primitive library", self)
+            self.export_action = QtWidgets.QAction("Export current library", self)
+
         self.file_menu.addAction(self.new_action)
         self.file_menu.addAction(self.open_action)
         self.file_menu.addAction(self.export_action)
@@ -205,8 +214,14 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
         # "Prim" menu
         self.prim_menu = menu_bar.addMenu("Prim")
-        self.refresh_action = QtGui.QAction("Refresh primitives", self)
-        self.help_action = QtGui.QAction("Help", self)
+
+        if pyside_version == "pyside_6":
+            self.refresh_action = QtGui.QAction("Refresh primitives", self)
+            self.help_action = QtGui.QAction("Help", self)
+        elif pyside_version == "pyside_2":
+            self.refresh_action = QtWidgets.QAction("Refresh primitives", self)
+            self.help_action = QtWidgets.QAction("Help", self)
+
         self.prim_menu.addAction(self.refresh_action)
         self.prim_menu.addAction(self.help_action)
         self.refresh_action.triggered.connect(self.refreshPrimitiveWidgets)
