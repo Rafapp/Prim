@@ -16,7 +16,7 @@
 
 
 ## Installation
-Note: This version supports Maya 2023, Maya 2024, and Maya 2025
+Note: This version supports **Maya 2023**, **Maya 2024**, and **Maya 2025**
 1. Download, and unzip the [latest release](https://github.com/Rafapp/Prim/releases) of `Prim.zip` in a location of your choosing.
 2. Adding the module to maya's environment file:
    1. Find the `Maya.env` file in your Maya installation.
