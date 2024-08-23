@@ -40,4 +40,4 @@ Note: This version supports **Maya 2023**, **Maya 2024**, and **Maya 2025**
 
 ## Contributing
 
-This project is completely open source, meaning the community is not only allowed but encouraged to make pull requests! Feel free to contribute if there are any features you'd like to see, of any bugs needing fixes.
+This project is completely open source, meaning the community is not only allowed but encouraged to make pull requests! Feel free to contribute if there are any features you'd like to see, or any bugs needing fixes.
