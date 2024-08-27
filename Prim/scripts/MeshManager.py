@@ -94,16 +94,6 @@ def savePrimitiveData(mesh_name):
                     show_error_dialog(f"Mesh with name {mesh_name} already exists. Please try a new name.\n\n(Note: Saving a primitive with the same name will update its preview)")
                     return
 
-    selected = cmds.ls(sl=True,long=True) or []
-    selectCount = len(selected)
-
-    if selectCount < 1:
-        show_error_dialog("Error: Please select at least one mesh")
-        return
-    elif selectCount > 1:
-        show_error_dialog("Error: Please select only one mesh")
-        return
-
     dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/meshes"
     full_dir_path = dir_path + "/" + mesh_name + ".obj"
     cmds.file(full_dir_path,

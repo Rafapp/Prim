@@ -411,6 +411,18 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             show_error_dialog("Open a primitive library (.prim) file first")
             return
 
+        # Ensure a single mesh is selected
+        selected = cmds.ls(sl=True,long=True) or []
+        selectCount = len(selected)
+
+        if selectCount < 1:
+            show_error_dialog("Error: Please select at least one mesh")
+            return
+        elif selectCount > 1:
+            show_error_dialog("Error: Please select only one mesh")
+            return
+
+        # Save the mesh and its data
         name = self.primitive_name.text()
         savePrimitiveData(name)
         renderMeshPreview(name)
