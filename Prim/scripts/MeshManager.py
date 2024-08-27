@@ -30,6 +30,8 @@ def renderMeshPreview(name):
     dir_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails"
     fullPath = dir_path + "/" + name + ".png"
 
+    # TODO: Add button to choose if user wants wireframe, which will toggle this de-select
+    # cmds.select(clear=True)
     cmds.playblast(fr=curFrame, v=False, fmt="image", c="png", orn=False, cf=fullPath, wh=[width,height], p=100)
 
 def instanceMesh(mesh_name):
