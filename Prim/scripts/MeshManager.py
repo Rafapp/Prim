@@ -18,8 +18,6 @@ def show_error_dialog(prompt):
         dismissString='Ok'
     )
 
-# TODO: Currently takes snapshot of viewport, should have UI functionality for artist to
-# choose his best preview angle.
 """
 Renders a preview of the mesh being saved using the viewport camera
 - Saves as .png file in /../primitives/thumbnails

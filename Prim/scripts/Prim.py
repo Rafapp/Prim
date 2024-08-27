@@ -151,6 +151,17 @@ class primitiveWidget(QtWidgets.QWidget):
         if confirm == False: return
 
         deletePrimitiveData(self.name)
+
+        thumbnails_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails/"
+        files = cmds.getFileList(folder = thumbnails_path)
+        if files: 
+            png_files = [f for f in files if f.endswith('.png')]
+        if png_files: 
+            for f in png_files:
+                if f == self.name +  ".png":
+                    os.remove(thumbnails_path + f)
+                    break
+
         if self.name in mainWindow.window_instance.primitive_widgets:
             del mainWindow.window_instance.primitive_widgets[self.name]
         mainWindow.window_instance.refreshPrimitiveWidgets()
@@ -344,15 +355,6 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
                     os.remove(meshes_path + f)
 
         #TODO: This deletes all images, but assumes they are regenerated on batch.
-        # Delete all thumbnails (excluding the default.png)
-#        thumbnails_path = os.path.dirname(os.path.realpath(__file__)) + "/../primitives/thumbnails/"
-#        files = cmds.getFileList(folder = thumbnails_path)
-#       if files: 
-#           png_files = [f for f in files if f.endswith('.png')]
-#           if png_files: 
-#               for f in png_files:
-#                   if f == "default.png": continue
-#                   os.remove(thumbnails_path + f)
 
         # Generate .obj meshes from prim file 
         generateMeshesFromPrimFile()
@@ -405,7 +407,6 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             except OSError:
                 print('Please open the link on your browser: ' + url)
 
-    #TODO: Check for file integrity here to avoid repetition in MeshManager
     def savePrimitive(self):
         if not current_prim_file_path:
             show_error_dialog("Open a primitive library (.prim) file first")
