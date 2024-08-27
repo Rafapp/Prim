@@ -1,21 +1,22 @@
 <div align = "center">
   <h1>Prim</h1>
   <img src = https://github.com/Rafapp/Prim/assets/38381290/7b585bc9-704f-4745-8c1b-783d7c551255 width = "350px" align = "center">
-  <h3>An open-source python Qt plugin for managing & sharing 3D primitives and meshes in Maya</h2>
+  <h3>An open-source python Qt plugin for managing & sharing 3D primitives and meshes in Maya</h3>
 </div>
 
 <div align = "center">
   <h1>Features</h1>
-  <h3>Saving in-scene meshes as named primitives to .prim library</h2>
+  <h3>Saving in-scene meshes as named primitives to .prim library</h3>
   <img src = https://github.com/user-attachments/assets/f375b1e3-6fd5-4b30-ba3c-27cec5eafc44 width = "500px" align = "center">
   <h3>Exporting and Importing a primitive library with data from all its meshes using the .prim file format</h3>
   <img src = https://github.com/user-attachments/assets/0affb0ff-f554-4c14-89d1-05fdc6355153 width = "500px" align = "center">
-  <h3>Mesh thumbnails, with custom capture angles, and optional wireframe</h3>
+  <h3>Mesh thumbnails, with custom capture angles</h3>
   <img src = https://github.com/user-attachments/assets/b843b96c-8052-4f4e-9bd0-d7067401446d width = "500px" align = "center">
 </div>
 
-## Installation
 
+## Installation
+Note: This version supports **Maya 2023**, **Maya 2024**, and **Maya 2025**
 1. Download, and unzip the [latest release](https://github.com/Rafapp/Prim/releases) of `Prim.zip` in a location of your choosing.
 2. Adding the module to maya's environment file:
    1. Find the `Maya.env` file in your Maya installation.
@@ -39,4 +40,4 @@
 
 ## Contributing
 
-This project is completely open source, meaning the community is not only allowed but encouraged to make pull requests! Feel free to contribute if there are any features you'd like to see, of any bugs needing fixes.
+This project is completely open source, meaning the community is not only allowed but encouraged to make pull requests! Feel free to contribute if there are any features you'd like to see, or any bugs needing fixes.
