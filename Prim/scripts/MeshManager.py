@@ -31,7 +31,10 @@ def renderMeshPreview(name):
     fullPath = dir_path + "/" + name + ".png"
 
     # TODO: Add button to choose if user wants wireframe, which will toggle this de-select
-    # cmds.select(clear=True)
+    from Prim import get_wireframe_toggled
+    wireframe_toggled = get_wireframe_toggled()
+    if not wireframe_toggled:
+        cmds.select(clear=True)
     cmds.playblast(fr=curFrame, v=False, fmt="image", c="png", orn=False, cf=fullPath, wh=[width,height], p=100)
 
 def instanceMesh(mesh_name):

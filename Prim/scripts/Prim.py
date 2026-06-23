@@ -23,10 +23,16 @@ import os
 
 # Global variable for the file being dynamically edited by prim
 current_prim_file_path = None
+# Global variable for wireframe toggle
+wireframe_toggled = True
 
 def get_current_prim_file_path():
     global current_prim_file_path
     return current_prim_file_path
+
+def get_wireframe_toggled():
+    global wireframe_toggled
+    return wireframe_toggled
 
 def show_decision_dialog(prompt):
     result = cmds.confirmDialog(
@@ -183,7 +189,7 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
             cls.window_instance.show(dockable=True)
         else:
             cls.window_instance.raise_()
-            cls.window_instance.activateWindow() 
+            cls.window_instance.activateWindow()
 
     def __init__(self, parent=mayaWindow()):
         super().__init__(parent)
@@ -252,6 +258,8 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         self.primitive_label.setStyleSheet("color:white")
         self.primitive_name = QtWidgets.QLineEdit()
         self.saveprimitive_button = QtWidgets.QPushButton("Save primitive")
+        self.wireframe_toggle = QtWidgets.QCheckBox("Toggle Wireframe")
+        self.wireframe_toggle.setChecked(True)
         
         # Scroll area setup
         self.scroll_area = QtWidgets.QScrollArea()
@@ -266,6 +274,7 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         main_layout.addWidget(self.primitive_label)
         main_layout.addWidget(self.primitive_name)
         main_layout.addWidget(self.saveprimitive_button)
+        main_layout.addWidget(self.wireframe_toggle)
         main_layout.addWidget(self.scroll_area)
 
         self.gallery_widget = QtWidgets.QWidget()  # Widget to contain the gallery layout
@@ -276,6 +285,7 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
 
     def createConnections(self):
         self.saveprimitive_button.clicked.connect(self.savePrimitive)
+        self.wireframe_toggle.clicked.connect(self.toggleWireframe)
 
     # Updates current .prim file label
     def updateCurrentFile(self, file_path): 
@@ -429,3 +439,10 @@ class mainWindow(MayaQWidgetDockableMixin, QtWidgets.QMainWindow):
         renderMeshPreview(name)
         self.addPrimitiveWidget(name)
         self.refreshPrimitiveWidgets()
+    
+    def toggleWireframe(self):
+        global wireframe_toggled
+        if self.wireframe_toggle.isChecked():
+            wireframe_toggled = True
+        else:
+            wireframe_toggled = False
